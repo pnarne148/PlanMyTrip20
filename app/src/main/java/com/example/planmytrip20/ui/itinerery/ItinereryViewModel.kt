@@ -10,4 +10,9 @@ class ItinereryViewModel : ViewModel() {
         value = "This is itinerery Fragment"
     }
     val text: LiveData<String> = _text
+
+    fun setText(str:String)
+    {
+        _text.value = str
+    }
 }

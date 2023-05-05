@@ -6,17 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".ui.itinerery.ItinereryFragment">
 
-    <TextView
-        android:id="@+id/text_dashboard"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="@dimen/tab_height"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="?attr/colorOnPrimary"
+        app:tabMode="fixed"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/tab_height"
+        app:layout_constraintTop_toBottomOf="@+id/tabs" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
