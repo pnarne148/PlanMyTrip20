@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.itinerery.ItinereryFragment">
+    tools:context=".ui.itinerary.ItineraryFragment">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
@@ -18,7 +18,8 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/tab_height"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="48dp"
         app:layout_constraintTop_toBottomOf="@+id/tabs" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

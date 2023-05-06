@@ -1,24 +1,22 @@
-package com.example.planmytrip20.ui.itinerery
+package com.example.planmytrip20.ui.itinerary
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.example.planmytrip20.databinding.FragmentItinereryBinding
-import com.example.planmytrip20.ui.itinerery.overview.OverviewFragment
-import com.example.planmytrip20.ui.itinerery.tripDetails.TripPlanFragment
+import com.example.planmytrip20.databinding.FragmentItineraryBinding
+import com.example.planmytrip20.ui.itinerary.overview.OverviewFragment
+import com.example.planmytrip20.ui.itinerary.tripDetails.TripPlanFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class ItinereryFragment : Fragment() {
+class ItineraryFragment : Fragment() {
 
-    private var _binding: FragmentItinereryBinding? = null
+    private var _binding: FragmentItineraryBinding? = null
     private lateinit var tabs: TabLayout
     private lateinit var viewPager: ViewPager2
 
@@ -31,11 +29,11 @@ class ItinereryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val itinereryViewModel =
-            ViewModelProvider(this).get(ItinereryViewModel::class.java)
+        val itineraryViewModel =
+            ViewModelProvider(this).get(ItineraryViewModel::class.java)
 
-        itinereryViewModel.setText("testing view model")
-        _binding = FragmentItinereryBinding.inflate(inflater, container, false)
+        itineraryViewModel.setText("testing view model")
+        _binding = FragmentItineraryBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         tabs = binding.tabs
@@ -52,10 +50,6 @@ class ItinereryFragment : Fragment() {
             }
         }.attach()
 
-//        val textView: TextView = binding.textDashboard
-//        itinereryViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
         return root
     }
 

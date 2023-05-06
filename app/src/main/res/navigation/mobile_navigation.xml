@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.planmytrip20.ui.itinerery.ItinereryFragment"
+        android:name="com.example.planmytrip20.ui.itinerary.ItineraryFragment"
         android:label="@string/title_itinerery"
-        tools:layout="@layout/fragment_itinerery" />
+        tools:layout="@layout/fragment_itinerary" />
 
     <fragment
         android:id="@+id/navigation_notifications"
