@@ -14,13 +14,10 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.planmytrip20.R
 import com.example.planmytrip20.WebScrape.WikipediaApi
 import com.example.planmytrip20.WebScrape.WikipediaScraper
-import com.example.planmytrip20.databinding.FragmentItinereryBinding
-import com.example.planmytrip20.ui.itinerery.overview.OverviewFragment
-import com.example.planmytrip20.ui.itinerery.tripDetails.TripPlanFragment
-import com.google.android.material.appbar.AppBarLayout
-import com.example.planmytrip20.databinding.FragmentItineraryBinding
 import com.example.planmytrip20.ui.itinerary.overview.OverviewFragment
 import com.example.planmytrip20.ui.itinerary.tripDetails.TripPlanFragment
+import com.google.android.material.appbar.AppBarLayout
+import com.example.planmytrip20.databinding.FragmentItineraryBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.squareup.picasso.Picasso
@@ -33,7 +30,7 @@ import kotlinx.coroutines.withContext
 class ItineraryFragment : Fragment() {
 
     var TAG = "Itinerery"
-    private var _binding: FragmentItinereryBinding? = null
+    private var _binding: FragmentItineraryBinding? = null
     private lateinit var tabs: TabLayout
     private lateinit var viewPager: ViewPager2
 
@@ -50,11 +47,11 @@ class ItineraryFragment : Fragment() {
         val place = "Paris"
 
         val itinereryViewModel =
-            ViewModelProvider(this).get(ItinereryViewModel::class.java)
+            ViewModelProvider(this).get(ItineraryViewModel::class.java)
 
         itinereryViewModel.setText("testing view model")
 
-        _binding = FragmentItinereryBinding.inflate(inflater, container, false)
+        _binding = FragmentItineraryBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         tabs = binding.tabs
