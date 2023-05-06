@@ -1,4 +1,4 @@
-package com.example.planmytrip20.ui.itinerery.overview
+package com.example.planmytrip20.ui.itinerary.overview
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.planmytrip20.databinding.FragmentItinereryBinding
 import com.example.planmytrip20.databinding.FragmentOverviewBinding
-import com.example.planmytrip20.ui.itinerery.ItinereryViewModel
-import com.google.android.material.tabs.TabLayoutMediator
+import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
 
 class OverviewFragment : Fragment() {
 
@@ -22,8 +20,8 @@ class OverviewFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val itinereryViewModel =
-            ViewModelProvider(requireParentFragment()).get(ItinereryViewModel::class.java)
+        val itineraryViewModel =
+            ViewModelProvider(requireParentFragment()).get(ItineraryViewModel::class.java)
 
         _binding = FragmentOverviewBinding.inflate(inflater, container, false)
         val root: View = binding.root

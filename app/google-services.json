@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "640042428689",
+    "firebase_url": "https://planmytrip-bu-default-rtdb.firebaseio.com",
+    "project_id": "planmytrip-bu",
+    "storage_bucket": "planmytrip-bu.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640042428689:android:b0793cbc6ad974965484b0",
+        "android_client_info": {
+          "package_name": "com.example.planmytrip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "640042428689-sgarsk05r0oage0gtgq83dkftc1hnr9s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUKgQ_l7KdvOfhaiF7y46Td-Veq3JCBww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "640042428689-9d6mtdbc5i1cvi15fmkm61pc9i8rdj0a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:640042428689:android:a83a154ea65939505484b0",
+        "android_client_info": {
+          "package_name": "com.example.planmytrip20"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "640042428689-sgarsk05r0oage0gtgq83dkftc1hnr9s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUKgQ_l7KdvOfhaiF7y46Td-Veq3JCBww"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "640042428689-9d6mtdbc5i1cvi15fmkm61pc9i8rdj0a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

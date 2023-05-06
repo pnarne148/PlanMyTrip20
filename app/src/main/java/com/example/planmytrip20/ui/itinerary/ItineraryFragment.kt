@@ -1,4 +1,4 @@
-package com.example.planmytrip20.ui.itinerery
+package com.example.planmytrip20.ui.itinerary
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -18,6 +18,9 @@ import com.example.planmytrip20.databinding.FragmentItinereryBinding
 import com.example.planmytrip20.ui.itinerery.overview.OverviewFragment
 import com.example.planmytrip20.ui.itinerery.tripDetails.TripPlanFragment
 import com.google.android.material.appbar.AppBarLayout
+import com.example.planmytrip20.databinding.FragmentItineraryBinding
+import com.example.planmytrip20.ui.itinerary.overview.OverviewFragment
+import com.example.planmytrip20.ui.itinerary.tripDetails.TripPlanFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.squareup.picasso.Picasso
@@ -27,7 +30,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class ItinereryFragment : Fragment() {
+class ItineraryFragment : Fragment() {
 
     var TAG = "Itinerery"
     private var _binding: FragmentItinereryBinding? = null
@@ -94,10 +97,6 @@ class ItinereryFragment : Fragment() {
             }
         }.attach()
 
-//        val textView: TextView = binding.textDashboard
-//        itinereryViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
         return root
     }
 
