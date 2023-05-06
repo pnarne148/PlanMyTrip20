@@ -4,12 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.planmytrip20.R
 import com.example.planmytrip20.databinding.FragmentItinereryBinding
 import com.example.planmytrip20.ui.itinerery.overview.OverviewFragment
 import com.example.planmytrip20.ui.itinerery.tripDetails.TripPlanFragment
@@ -38,19 +41,20 @@ class ItinereryFragment : Fragment() {
         _binding = FragmentItinereryBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        tabs = binding.tabs
-        viewPager = binding.viewPager
 
-        // Set up the tabs and view pager
-        val adapter = MyPagerAdapter(this)
-        viewPager.adapter = adapter
-        TabLayoutMediator(tabs, viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "Overview"
-                1 -> "Trip Plan"
-                else -> ""
-            }
-        }.attach()
+//        tabs = binding.tabs
+//        viewPager = binding.viewPager
+//
+//        // Set up the tabs and view pager
+//        val adapter = MyPagerAdapter(this)
+//        viewPager.adapter = adapter
+//        TabLayoutMediator(tabs, viewPager) { tab, position ->
+//            tab.text = when (position) {
+//                0 -> "Overview"
+//                1 -> "Trip Plan"
+//                else -> ""
+//            }
+//        }.attach()
 
 //        val textView: TextView = binding.textDashboard
 //        itinereryViewModel.text.observe(viewLifecycleOwner) {

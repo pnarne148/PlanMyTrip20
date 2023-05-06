@@ -11,6 +11,11 @@ class ItinereryViewModel : ViewModel() {
     }
     val text: LiveData<String> = _text
 
+    private val _place = MutableLiveData<String>().apply {
+        value = "Paris"
+    }
+    val place: LiveData<String> = _text
+
     fun setText(str:String)
     {
         _text.value = str
