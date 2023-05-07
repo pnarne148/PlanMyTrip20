@@ -3,14 +3,16 @@ package com.example.planmytrip20.classes
 import com.google.android.gms.maps.model.LatLng
 
 data class ItineraryLocation(
-    val location_id: String, // id of location in our database
-    val place_id: String, // place id from google
-    val name: String,
-    val address: String,
-    val latLng: LatLng,
-    val openingHours: OpeningHours,
-    val visited : Boolean = false,
-    val description: String,
-    val location_image: Int? = null,
-    val rating: Int
+    var location_id: String, // id of location in our database
+    var place_id: String, // place id from google
+    var name: String,
+    var address: String,
+    var latLng: LatLng,
+    var openingHours: OpeningHours,
+    var visited : Boolean = false,
+    var description: String,
+    val location_image_url: String? = null,
+    var rating: Int,
+    var wikiUrl: String? = null,
+    var user_photo_urls: List<String>? = null
 )

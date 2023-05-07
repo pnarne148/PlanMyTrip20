@@ -51,4 +51,6 @@ class MainActivity : AppCompatActivity() {
                 Log.w(TAG, "Error getting documents.", exception)
             }
     }
+
+    companion object {}
 }
