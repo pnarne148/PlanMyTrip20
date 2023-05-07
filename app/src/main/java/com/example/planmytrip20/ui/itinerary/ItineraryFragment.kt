@@ -19,6 +19,7 @@ import com.example.planmytrip20.ui.itinerary.overview.OverviewFragment
 import com.example.planmytrip20.ui.itinerary.tripDetails.TripPlanFragment
 import com.google.android.material.appbar.AppBarLayout
 import com.example.planmytrip20.databinding.FragmentItineraryBinding
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.squareup.picasso.Picasso
@@ -45,12 +46,24 @@ class ItineraryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val place = "Paris"
+        var place: String
+        val location: LatLng
+        if(arguments != null) {
+            place = requireArguments().getString("place").toString()
+            location = requireArguments().getParcelable<LatLng>("location")!!
+            Log.d(TAG, "onCreateView: "+place)
+        }
+        else{
+            place = "Paris"
+            location = LatLng(48.8566, 2.3522)
+        }
+
+        Log.d(TAG, "onCreateView: "+place)
 
         val itinereryViewModel =
             ViewModelProvider(this).get(ItineraryViewModel::class.java)
 
-        itinereryViewModel.setText("testing view model")
+        itinereryViewModel.setDestination(place, location)
 
         _binding = FragmentItineraryBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -79,13 +92,10 @@ class ItineraryFragment : Fragment() {
             val imageURL = WikipediaApi.getImageUrlFromWikipedia(place)
             Log.d(TAG, "onCreateView: "+imageURL)
             val bitmap = Picasso.get().load(imageURL).get()
-
             withContext(Dispatchers.Main) {
                 binding.placeBg.setImageBitmap(bitmap)
             }
         }
-
-
 
         // Set up the tabs and view pager
         val adapter = MyPagerAdapter(this)

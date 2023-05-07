@@ -27,6 +27,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 class PickDestinationFragment : Fragment() {
 
     private lateinit var view: View
+    private lateinit var selectedLocation: SelectedLocation
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -40,9 +41,6 @@ class PickDestinationFragment : Fragment() {
         view.findViewById<ConstraintLayout>(R.id.pick_destination).visibility = View.VISIBLE
 
         val itinereryViewModel = ViewModelProvider(this).get(ItineraryViewModel::class.java)
-//        itinereryViewModel.destination.observe(viewLifecycleOwner) {
-//            view.findViewById<EditText>(R.id.destination).setText(it.address.toString())
-//        }
 
         (activity as MainActivity).hideBottomNavigation()
 
@@ -52,11 +50,11 @@ class PickDestinationFragment : Fragment() {
 
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                var selectedLocation =
+                selectedLocation =
                     place.name?.let { place.latLng?.let { it1 ->
                         SelectedLocation(it,
                             it1, emptyList(), emptyList())
-                    } }
+                    } }!!
                 itinereryViewModel.setDestination(selectedLocation)
             }
 
@@ -71,10 +69,17 @@ class PickDestinationFragment : Fragment() {
 
         view.findViewById<Button>(R.id.startPlanning).setOnClickListener {
             val fragment = ItineraryFragment()
+
+            val bundle = Bundle()
+            bundle.putString("place", selectedLocation.address)
+            bundle.putParcelable("location", selectedLocation.latLng)
+            fragment.arguments = bundle
+
+
             val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
             transaction.replace(R.id.nav_host_fragment_activity_main, fragment)
-//            transaction.addToBackStack(null)
-//            transaction.setReorderingAllowed(true)
+            transaction.addToBackStack(null)
+            transaction.setReorderingAllowed(true)
             transaction.commit()
         }
 

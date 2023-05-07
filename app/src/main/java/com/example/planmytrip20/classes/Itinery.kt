@@ -31,13 +31,5 @@ class Itinery(arrangedList: List<SelectedLocation>) {
 //        return activities.fold(0) { acc, activity -> acc + activity.timeSpent }
 //    }
 
-    fun getSelectedLocationsNames(): List<String> {
-        return places.map { it.address }
-    }
-
-    fun getSelectedLocationsAddresses(): List<String> {
-        return places.map { it.address }
-    }
-
 
 }

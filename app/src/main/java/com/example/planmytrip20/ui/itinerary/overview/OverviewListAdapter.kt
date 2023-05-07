@@ -25,11 +25,11 @@ class OverviewListAdapter(private val context: Context,private val viewModel: It
         return when (viewType) {
             VIEW_TYPE_NOTES -> {
                 val binding = CardNotesItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                ViewHolderOne(binding)
+                ViewHolderNotes(binding)
             }
             VIEW_TYPE_PLACES -> {
                 val binding = CardPlacesItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-                ViewHolderTwo(binding)
+                ViewHolderPlaces(binding)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -39,12 +39,12 @@ class OverviewListAdapter(private val context: Context,private val viewModel: It
         val item = values[position]
         when (holder.itemViewType) {
             VIEW_TYPE_NOTES -> {
-                val viewHolderOne = holder as ViewHolderOne
-                viewHolderOne.bind(item)
+                val viewHolderNotes = holder as ViewHolderNotes
+                viewHolderNotes.bind(item)
             }
             VIEW_TYPE_PLACES -> {
-                val viewHolderTwo = holder as ViewHolderTwo
-                viewHolderTwo.bind(item)
+                val viewHolderPlaces = holder as ViewHolderPlaces
+                viewHolderPlaces.bind(item)
             }
         }
     }
@@ -59,7 +59,7 @@ class OverviewListAdapter(private val context: Context,private val viewModel: It
         }
     }
 
-    inner class ViewHolderOne(private val binding: CardNotesItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolderNotes(private val binding: CardNotesItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: String) {
             binding.cardType.text = item
             binding.notes.onFocusChangeListener = View.OnFocusChangeListener { view, hasFocus ->
@@ -94,7 +94,7 @@ class OverviewListAdapter(private val context: Context,private val viewModel: It
         }
     }
 
-    inner class ViewHolderTwo(private val binding: CardPlacesItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolderPlaces(private val binding: CardPlacesItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: String) {
             binding.cardType.text = item
         }
