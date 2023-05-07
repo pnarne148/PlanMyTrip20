@@ -4,7 +4,7 @@ import com.google.android.gms.maps.model.LatLng
 
 data class SelectedLocation(
     val address: String,
-    val latLng: LatLng,
+    val latLng: LatLng?,
     var nearByPlaces: List<Result>,
     var selection: List<Boolean>
 )

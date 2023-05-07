@@ -5,9 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.itinerary.overview.OverviewFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="24dp"
-        android:text="@string/large_text" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/card_item"
+        android:background="?attr/actionBarDivider"
+        />
+
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:padding="24dp"-->
+<!--            android:text="@string/large_text" />-->
+
 </androidx.core.widget.NestedScrollView>

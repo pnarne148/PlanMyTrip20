@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -78,10 +79,13 @@ class ItineraryFragment : Fragment() {
             val imageURL = WikipediaApi.getImageUrlFromWikipedia(place)
             Log.d(TAG, "onCreateView: "+imageURL)
             val bitmap = Picasso.get().load(imageURL).get()
+
             withContext(Dispatchers.Main) {
                 binding.placeBg.setImageBitmap(bitmap)
             }
         }
+
+
 
         // Set up the tabs and view pager
         val adapter = MyPagerAdapter(this)
@@ -125,4 +129,18 @@ class ItineraryFragment : Fragment() {
             }
         }
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            val fragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+            if (fragment != null) {
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .remove(fragment)
+                    .commit()
+            }
+        }
+    }
+
+
 }

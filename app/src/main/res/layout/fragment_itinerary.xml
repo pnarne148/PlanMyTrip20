@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/lightgray"
     tools:context=".ui.itinerary.ItineraryFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -68,7 +69,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     android:textColor="@color/white"
-                    android:textSize="28sp"/>
+                    android:textSize="@dimen/title_text_size"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -124,20 +125,21 @@
         app:layout_constraintTop_toBottomOf="@+id/tabs">
 
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/tab_height"
-                app:layout_constraintTop_toTopOf="parent"
-                android:background="?attr/colorOnPrimary"
-                app:tabMode="fixed"/>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tab_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textAllCaps="false"
+            android:background="?attr/colorOnPrimary"
+            app:tabMode="fixed"/>
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/tab_height"
-                app:layout_constraintTop_toBottomOf="@+id/tabs" />
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/tab_height"
+            app:layout_constraintTop_toBottomOf="@+id/tabs" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

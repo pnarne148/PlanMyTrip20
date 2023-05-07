@@ -39,7 +39,5 @@ class Itinery(arrangedList: List<SelectedLocation>) {
         return places.map { it.address }
     }
 
-    fun getSelectedLocationsLatLng(): List<LatLng> {
-        return places.map { it.latLng }
-    }
+
 }
