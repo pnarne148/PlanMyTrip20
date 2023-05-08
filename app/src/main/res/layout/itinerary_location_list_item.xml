@@ -32,6 +32,7 @@
                 android:padding="8dp"
                 android:checked="true"/>
             <LinearLayout
+                android:id="@+id/location_desc_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -65,6 +66,39 @@
                     android:paddingBottom="4dp"
                     android:layout_gravity="left"/>
                 <LinearLayout
+                    android:id="@+id/user_images_view"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="left"
+                    android:paddingBottom="2dp"
+                    android:layout_width="match_parent">
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:maxHeight="50dp"
+                        android:src="@drawable/test_image"/>
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:maxHeight="50dp"
+                        android:src="@drawable/test_image"/>
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:maxHeight="50dp"
+                        android:src="@drawable/test_image"/>
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:maxHeight="50dp"
+                        android:src="@drawable/test_image"/>
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:maxHeight="50dp"
+                        android:src="@drawable/test_image"/>
+                </LinearLayout>
+                <LinearLayout
                     android:id="@+id/user_options_view"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
@@ -94,7 +128,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
+
+
+
             </LinearLayout>
+
+
+
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -117,7 +157,7 @@
             android:id="@+id/in_progress_status_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="In Transit/ In Progress"
+            android:text="Next Stop/ In Transit"
             android:padding="10dp"
             android:textStyle="bold"
             android:layout_gravity="center"

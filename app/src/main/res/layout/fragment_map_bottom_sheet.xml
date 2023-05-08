@@ -3,18 +3,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
+    android:padding="20dp"
+    android:id="@+id/bottomSheet"
     tools:context=".ui.itinerary.maps.MapBottomSheetFragment">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:map="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/map"
-        tools:context=".MainActivity"
-        map:uiZoomControls="true"
-        map:uiRotateGestures="true"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/bottom_sheet_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Optimize"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:textSize="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/blue">
+        </TextView>
+
+        <TextView
+            android:id="@+id/source"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Optimize"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/location_24"
+            android:drawableTint="@color/green"
+            android:textSize="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="5dp"
+            android:textColor="@color/blue">
+        </TextView>
+        <TextView
+            android:id="@+id/destination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Optimize"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/location_24"
+            android:drawableTint="@color/red"
+            android:textSize="15dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp"
+            android:textColor="@color/blue">
+        </TextView>
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:map="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="450dp"
+            android:id="@+id/map"
+            tools:context=".MainActivity"
+            map:uiZoomControls="true"
+            map:uiRotateGestures="true"
+            android:name="com.google.android.gms.maps.SupportMapFragment" />
+    </LinearLayout>
 
 </FrameLayout>

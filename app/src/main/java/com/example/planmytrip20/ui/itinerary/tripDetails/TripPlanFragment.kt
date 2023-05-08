@@ -7,12 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.example.planmytrip20.R
 import com.example.planmytrip20.classes.ItineraryLocation
 import com.example.planmytrip20.classes.OpeningHours
 import com.example.planmytrip20.databinding.FragmentTripPlanBinding
+import com.example.planmytrip20.ui.common.WebViewFragment
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
 import com.example.planmytrip20.ui.itinerary.maps.MapBottomSheetFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.GsonBuilder
 
 class TripPlanFragment : Fragment() {
@@ -28,6 +31,7 @@ class TripPlanFragment : Fragment() {
         val itineraryViewModel =
             ViewModelProvider(requireParentFragment()).get(ItineraryViewModel::class.java)
 
+        // TODO: Get all the locations that are in itinerary and pass to recyclerview
         locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 1",
             "50 Winship Street", LatLng(42.9912, -70.456), OpeningHours(true), true, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 5))
 
@@ -50,6 +54,15 @@ class TripPlanFragment : Fragment() {
 
         _binding = FragmentTripPlanBinding.inflate(inflater, container, false)
 
+        _binding!!.optimizeRouteText.setOnClickListener {
+            MaterialAlertDialogBuilder(it.context).setTitle("Alert")
+                .setMessage("This feature is only available for PRO members. Please upgrade to premium")
+                .setPositiveButton("OK") { dialog, which ->
+
+                }.show()
+        }
+
+
         _binding!!.list.adapter = adapter
 
         adapter.openMap = { loc1: ItineraryLocation, loc2: ItineraryLocation, mapType: String ->
@@ -69,6 +82,7 @@ class TripPlanFragment : Fragment() {
                 locations[position].visited = true
                 if (!binding.list.isComputingLayout)
                 {
+                    //TODO: Update the database and cache with location update
                     adapter.notifyItemChanged(position)
                     adapter.notifyItemChanged(position + 1)
                     adapter.notifyItemChanged(position - 1)
@@ -77,11 +91,21 @@ class TripPlanFragment : Fragment() {
                 locations[position].visited = false
                 if (!binding.list.isComputingLayout)
                 {
+                    //TODO: Update the database and cache with location update
                     adapter.notifyItemChanged(position)
                     adapter.notifyItemChanged(position + 1)
                     adapter.notifyItemChanged(position - 1)
                 }
             }
+        }
+
+        adapter.openWebView = {wikiUrl: String ->
+            var fragment = WebViewFragment()
+//            val transaction = childFragmentManager.beginTransaction()
+//            transaction.replace(R.id., fragment)
+//            transaction.addToBackStack(null)
+//            transaction.setReorderingAllowed(true)
+//            transaction.commit()
         }
 
         return binding.root

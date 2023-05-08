@@ -1,25 +1,34 @@
 package com.example.planmytrip20.ui.itinerary.maps
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.example.planmytrip20.R
 import com.example.planmytrip20.api.MapApiService
 import com.example.planmytrip20.classes.GDirectionsAPIResponse
+import com.example.planmytrip20.classes.GMapApiResponseData
 import com.example.planmytrip20.classes.ItineraryLocation
+import com.example.planmytrip20.classes.Result
 import com.example.planmytrip20.classes.Route
 import com.example.planmytrip20.databinding.FragmentMapBottomSheetBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.GsonBuilder
 import com.google.maps.android.PolyUtil
@@ -42,6 +51,13 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
     private lateinit var routes : List<Route>
     private var displayRoute = false
 
+    private lateinit var nearByPlaces : List<Result>
+    private var displayNearByPlaces = false
+
+    lateinit var polylineOptions : PolylineOptions
+    lateinit var pathCoordinates : MutableList<LatLng>
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -58,6 +74,10 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        binding.bottomSheetHeader.text = "Directions & Places - Map view"
+        binding.source.text = "Source: ${source.latLng.latitude}, ${source.latLng.longitude}"
+        binding.destination.text = "Destination: ${destination.latLng.latitude}, ${destination.latLng.longitude}"
 
         return binding.root
     }
@@ -87,21 +107,42 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
             .build()
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
         if(displayRoute){
-            val polylineOptions = PolylineOptions()
-            Log.i(TAG, "Route length: ${routes.size}")
-            Log.i(TAG, "Route steps length: ${routes[0].legs[0].steps.size}")
-
+            polylineOptions = PolylineOptions()
             val polylinePoints = routes[0].overview_polyline.points
-            val coordinates = PolyUtil.decode(polylinePoints)
-            coordinates.forEach { coordinate ->
+            pathCoordinates = PolyUtil.decode(polylinePoints)
+            val boundsBuilder = LatLngBounds.Builder()
+            pathCoordinates.forEach { coordinate ->
+                boundsBuilder.include(coordinate)
                 polylineOptions.add(coordinate)
             }
+            val bounds = boundsBuilder.build()
+            val padding = 100 // Adjust this as needed to create the desired amount of padding around the polyline
+            val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+            mMap.animateCamera(cameraUpdate)
             mMap.addPolyline(polylineOptions)
+        }
+        if(displayNearByPlaces && mapType == "restaurant"){
+            for (place in nearByPlaces) {
+                mMap.addMarker(MarkerOptions().position(LatLng(place.geometry.location.lat, place.geometry.location.lng)).title(place.name)
+                    .icon(bitmapDescriptorFromVector(this.binding.root.context, R.drawable.restaurant)))
+            }
+        } else if(displayNearByPlaces && mapType =="gas_station"){
+            for (place in nearByPlaces) {
+                mMap.addMarker(MarkerOptions().position(LatLng(place.geometry.location.lat, place.geometry.location.lng)).title(place.name)
+                    .icon(bitmapDescriptorFromVector(this.binding.root.context, R.drawable.gas)))
+            }
         }
 
     }
 
-
+    private fun  bitmapDescriptorFromVector(context: Context, vectorResId:Int):BitmapDescriptor {
+        val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)
+        vectorDrawable!!.setBounds(0, 0, vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
+        val bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+        val canvas =  Canvas(bitmap)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
 
     private fun fetchDirections(){
         val urlString = "https://maps.googleapis.com/"
@@ -109,13 +150,20 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(urlString)
             .build().create(MapApiService::class.java)
+        val drivingMode = if(mapType != "BICYCLE"){
+            "DRIVING"
+        } else {
+            "BICYCLE"
+        }
+
+        if(mapType == "restaurant" || mapType == "gas_station"){
+            fetchNearByPlaces()
+        }
+
         val retrofitData = retrofitBuilder.getDirections(
             "AIzaSyD0IAwuCADIsl-MFp1yhhGWBXxgjlUjbFw",
             "${source.latLng.latitude},${source.latLng.longitude}",
-            "${destination.latLng.latitude},${destination.latLng.longitude}","DRIVING")
-//        val retrofitData = retrofitBuilder.getDirections(
-//            "AIzaSyD0IAwuCADIsl-MFp1yhhGWBXxgjlUjbFw",
-//            "Toronto",
+            "${destination.latLng.latitude},${destination.latLng.longitude}",drivingMode)
 //            "Montreal","DRIVING")
 
         retrofitData.enqueue(object : Callback<GDirectionsAPIResponse?> {
@@ -137,34 +185,36 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
         })
     }
 
-    private fun fetchNearByPlaces(selLocCoordinates:LatLng) {
+    private fun fetchNearByPlaces() {
         val urlString =  "https://maps.googleapis.com/"
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(urlString)
             .build().create(MapApiService::class.java)
-        Log.i(TAG, "responseBody: ${selLocCoordinates.latitude},${selLocCoordinates.longitude}")
-//        val retrofitData = retrofitBuilder.getNearByPlaces(
-//            "AIzaSyD0IAwuCADIsl-MFp1yhhGWBXxgjlUjbFw",
-//            "${selLocCoordinates.latitude},${selLocCoordinates.longitude}",
-//            "restaurants", )
-//
-//        retrofitData.enqueue(object : Callback<GMapApiResponseData?> {
-//            override fun onResponse(
-//                call: Call<GMapApiResponseData?>,
-//                response: Response<GMapApiResponseData?>
-//            ) {
-//                val responseBody = response.body()!!
-//                nearByPlaces = responseBody.results
-//                if(nearByPlaces.isNotEmpty()){
-//                    displayNearByPlaces = true
-//                }
-//                onMapReady(mMap)
-//            }
-//            override fun onFailure(call: Call<GMapApiResponseData?>, t: Throwable) {
-//                TODO("Not yet implemented")
-//                Log.i(TAG, "Failure Message: ${t.message}")
-//            }
-//        })
+
+        val retrofitData = retrofitBuilder.getNearByPlaces(
+            "AIzaSyD0IAwuCADIsl-MFp1yhhGWBXxgjlUjbFw",
+            "${source.latLng.latitude},${source.latLng.longitude}",
+            mapType, 150000)
+
+        retrofitData.enqueue(object : Callback<GMapApiResponseData?> {
+            override fun onResponse(
+                call: Call<GMapApiResponseData?>,
+                response: Response<GMapApiResponseData?>,
+            ) {
+                val responseBody = response.body()!!
+                nearByPlaces =  responseBody.results
+                Log.i(TAG, "Near By Places: ${nearByPlaces.size}")
+                if(nearByPlaces.isNotEmpty()){
+                    displayNearByPlaces = true
+                }
+                onMapReady(mMap)
+            }
+            override fun onFailure(call: Call<GMapApiResponseData?>, t: Throwable) {
+                TODO("Not yet implemented")
+                Log.i(TAG, "Failure Message: ${t.message}")
+            }
+        })
+
     }
 }
