@@ -24,7 +24,7 @@
             app:title="Trip to Paris"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:expandedTitleMarginStart="64dp"
             app:titleEnabled="false"
             app:toolbarId="@+id/toolbar">
@@ -139,6 +139,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/tab_height"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layout_constraintTop_toBottomOf="@+id/tabs" />
 
 

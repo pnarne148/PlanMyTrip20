@@ -7,13 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.planmytrip20.R
 import com.example.planmytrip20.databinding.CardNotesItemBinding
 import com.example.planmytrip20.databinding.CardPlacesItemBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
 
-class OverviewListAdapter(private val context: Context,private val viewModel: ItineraryViewModel, private val values: List<String>) :
+
+class OverviewListAdapter(
+    private val context: Context,
+    private val viewModel: ItineraryViewModel,
+    private val viewLifecycleOwner: LifecycleOwner,
+    private val values: List<String>
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -88,8 +98,6 @@ class OverviewListAdapter(private val context: Context,private val viewModel: It
                     binding.notes.visibility = View.GONE
                     binding.dropDown.setImageResource(R.drawable.ic_right_arrow)
                 }
-
-                binding.notes.visibility
             }
         }
     }
@@ -97,6 +105,43 @@ class OverviewListAdapter(private val context: Context,private val viewModel: It
     inner class ViewHolderPlaces(private val binding: CardPlacesItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: String) {
             binding.cardType.text = item
+
+            binding.selectedPlaces.addItemDecoration(
+                DividerItemDecoration(
+                    context,
+                    DividerItemDecoration.VERTICAL
+                )
+            )
+
+            with(binding.selectedPlaces) {
+                layoutManager = LinearLayoutManager(context)
+
+                viewModel.chosenPlaces.observe(viewLifecycleOwner, Observer {
+                    adapter = ChosenPlacesAdapter(context, viewModel, it)
+                })
+            }
+
+            with(binding.recommendedPlaces) {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+                viewModel.recommendedPlaces.observe(viewLifecycleOwner, Observer {
+                    adapter = RecommendedPlacesAdapter(context, viewModel, it)
+                })
+            }
+
+            binding.dropDown.setOnClickListener {
+                if (binding.dropDown.drawable?.constantState?.equals(ContextCompat.getDrawable(context, R.drawable.ic_right_arrow)?.constantState) == true)
+                {
+                    binding.placesLayout.visibility = View.VISIBLE
+                    binding.dropDown.setImageResource(R.drawable.ic_down_arrow)
+                }
+                else
+                {
+                    binding.placesLayout.visibility = View.GONE
+                    binding.dropDown.setImageResource(R.drawable.ic_right_arrow)
+                }
+            }
+
         }
     }
 }

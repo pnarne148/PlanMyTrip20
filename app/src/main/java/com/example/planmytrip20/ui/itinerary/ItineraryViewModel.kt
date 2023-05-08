@@ -4,13 +4,18 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.planmytrip20.BuildConfig
+import androidx.lifecycle.viewModelScope
 import com.example.planmytrip20.R
+import com.example.planmytrip20.WebScrape.WikipediaApi
 import com.example.planmytrip20.api.MapApiService
 import com.example.planmytrip20.classes.GMapApiResponseData
 import com.example.planmytrip20.classes.RecommendedLocations
 import com.example.planmytrip20.classes.SelectedLocation
 import com.google.android.gms.maps.model.LatLng
+import com.squareup.picasso.Picasso
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -69,9 +74,14 @@ class ItineraryViewModel : ViewModel() {
             .build().create(MapApiService::class.java)
 
         val retrofitData = retrofitBuilder.getNearByPlaces(
-            R.string.maps_api_key.toString(),
-            "${selLocCoordinates?.latitude},${selLocCoordinates?.longitude}",
+            "AIzaSyD0IAwuCADIsl-MFp1yhhGWBXxgjlUjbFw",
+            "${selLocCoordinates?.latitude}," +
+                    "${selLocCoordinates?.longitude}",
             "tourist_attraction", 15000)
+
+        Log.d("itinerery", "Request URL: ${R.string.maps_api_key.toString()}")
+
+        Log.d("itinerery", "Request URL: ${retrofitData.request().url}")
 
         retrofitData.enqueue(object : Callback<GMapApiResponseData?> {
             override fun onResponse(
@@ -80,7 +90,9 @@ class ItineraryViewModel : ViewModel() {
             ) {
                 val responseBody = response.body()!!
                 selectedLocation.nearByPlaces = responseBody.results
+                Log.d("itinerery", "onCreateView: "+response.body())
                 selectedLocation.selection = List(responseBody.results.size) { false }
+                initializeLists(selectedLocation)
             }
             override fun onFailure(call: Call<GMapApiResponseData?>, t: Throwable) {
                 TODO("Not yet implemented")
@@ -92,20 +104,43 @@ class ItineraryViewModel : ViewModel() {
         val selLocation = SelectedLocation(place,location, emptyList(), emptyList())
         setDestination(selLocation)
         fetchNearByPlaces(selLocation)
-        selLocation.nearByPlaces
+        Log.d("itinerery", "onCreateView: "+selLocation.nearByPlaces.size)
+    }
 
-        _recommendedPlaces.value = selLocation.nearByPlaces.mapNotNull { result ->
-            val lat = result.geometry?.location?.lat
-            val lng = result.geometry?.location?.lng
-            if (lat != null && lng != null) {
-                RecommendedLocations(result.name, LatLng(lat, lng))
-            } else {
-                null
+    fun initializeLists(selLocation: SelectedLocation) {
+        Log.d("itinerery", "onCreateView:===== ${selLocation.nearByPlaces.size}")
+
+        viewModelScope.launch {
+            val recommendedLocations = selLocation.nearByPlaces.mapNotNull { result ->
+                val lat = result.geometry?.location?.lat
+                val lng = result.geometry?.location?.lng
+                if (lat != null && lng != null) {
+                    val imageURL = withContext(Dispatchers.IO) {
+                        WikipediaApi.getImageUrlFromWikipedia(result.name)
+                    }
+
+                    val desc = withContext(Dispatchers.IO) {
+                        WikipediaApi.getFirstParagraphFromWikipedia(result.name)
+                    }
+
+                    val bitmap = withContext(Dispatchers.IO) {
+                        Picasso.get().load(imageURL).resize(100, 100).get()
+                    }
+
+                    Log.d("itinerery", "initializeLists: "+imageURL)
+                    RecommendedLocations(result.name, LatLng(lat, lng), imageURL, bitmap, desc)
+
+                } else {
+                    null
+                }
             }
+            _recommendedPlaces.value = recommendedLocations.filter { it.bitmap != null }
+
         }
 
         _chosenPlaces.value = emptyList()
     }
+
 
     fun choosePlace(recommendedLocation: RecommendedLocations) {
         val recommendedList = _recommendedPlaces.value.orEmpty().toMutableList()

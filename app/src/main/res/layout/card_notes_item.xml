@@ -19,7 +19,7 @@
             android:layout_width="@dimen/icon_dims"
             android:layout_height="@dimen/icon_dims"
             android:layout_marginHorizontal="@dimen/text_margin"
-            android:src="@drawable/ic_right_arrow"
+            android:src="@drawable/ic_down_arrow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

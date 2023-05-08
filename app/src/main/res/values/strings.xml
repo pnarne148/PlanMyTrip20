@@ -98,6 +98,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="plan_trip_heading">Plan a new Trip</string>
     <string name="maps_api_key">AIzaSyD0IAwuCADIsl-MFp1yhhGWBXxgjlUjbFw</string>
-    <string name="maps_base_url">"https://maps.googleapis.com/"</string>
+
+    <string name="location_prompt">    Add location</string>
 
 </resources>

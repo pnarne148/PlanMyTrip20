@@ -59,6 +59,7 @@ dependencies {
 
     //fetch image from url
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'jp.wasabeef:picasso-transformations:2.4.0'
 
     //flicker
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'

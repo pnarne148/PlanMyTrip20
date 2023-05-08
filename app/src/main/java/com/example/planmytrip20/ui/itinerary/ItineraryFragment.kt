@@ -111,16 +111,6 @@ class ItineraryFragment : Fragment() {
         return root
     }
 
-    private fun setImage(placeBg: ImageView) {
-
-        val ivBasicImage = activity?.findViewById(com.example.planmytrip20.R.id.place_bg) as ImageView
-        Picasso.get().load("https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg/1920px-La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg").into(ivBasicImage)
-
-//        Picasso.get()
-//            .load("https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg/1920px-La_Tour_Eiffel_vue_de_la_Tour_Saint-Jacques%2C_Paris_ao%C3%BBt_2014_%282%29.jpg")
-//            .into(placeBg)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
