@@ -1,18 +1,69 @@
 package com.example.planmytrip20.classes
 
+import android.graphics.Bitmap
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 
 data class ItineraryLocation(
     var location_id: String, // id of location in our database
-    var place_id: String, // place id from google
-    var name: String,
-    var address: String,
+    var place_id: String?, // place id from google
+    var name: String?,
+    var address: String?,
     var latLng: LatLng,
-    var openingHours: OpeningHours,
+    var openingHours: OpeningHours?,
     var visited : Boolean = false,
-    var description: String,
+    var description: String?,
     val location_image_url: String? = null,
-    var rating: Int,
+    var rating: Double?,
     var wikiUrl: String? = null,
-    var user_photo_urls: List<String>? = null
-)
+    var user_photo_urls: List<String>? = null,
+    var bitmap: Bitmap? = null
+): Parcelable {
+
+    constructor(parcel: Parcel) : this(
+        parcel.readString() ?: "",
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readParcelable(LatLng::class.java.classLoader)!!,
+        parcel.readParcelable(OpeningHours::class.java.classLoader),
+        parcel.readByte() != 0.toByte(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readValue(Double::class.java.classLoader) as? Double,
+        parcel.readString(),
+        parcel.createStringArrayList(),
+        parcel.readParcelable(Bitmap::class.java.classLoader)
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(location_id)
+        parcel.writeString(place_id)
+        parcel.writeString(name)
+        parcel.writeString(address)
+        parcel.writeParcelable(latLng, flags)
+        parcel.writeParcelable(openingHours, flags)
+        parcel.writeByte(if (visited) 1 else 0)
+        parcel.writeString(description)
+        parcel.writeString(location_image_url)
+        parcel.writeValue(rating)
+        parcel.writeString(wikiUrl)
+        parcel.writeStringList(user_photo_urls)
+        parcel.writeParcelable(bitmap, flags)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ItineraryLocation> {
+        override fun createFromParcel(parcel: Parcel): ItineraryLocation {
+            return ItineraryLocation(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ItineraryLocation?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

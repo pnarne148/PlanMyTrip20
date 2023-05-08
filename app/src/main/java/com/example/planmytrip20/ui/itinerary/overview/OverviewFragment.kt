@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.planmytrip20.databinding.FragmentOverviewBinding
+import com.example.planmytrip20.ui.itinerary.ItineraryFragment
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
 
-class OverviewFragment : Fragment() {
+class OverviewFragment(viewModelOwner: ViewModelStoreOwner) : Fragment() {
 
     private var _binding: FragmentOverviewBinding? = null
 

@@ -15,6 +15,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
 import com.example.planmytrip20.MainActivity
 import com.example.planmytrip20.R
+import com.example.planmytrip20.classes.ItineraryLocation
+import com.example.planmytrip20.classes.OpeningHours
 import com.example.planmytrip20.classes.SelectedLocation
 import com.example.planmytrip20.ui.itinerary.ItineraryFragment
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
@@ -27,7 +29,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 class PickDestinationFragment : Fragment() {
 
     private lateinit var view: View
-    private lateinit var selectedLocation: SelectedLocation
+    private lateinit var selectedLocation: ItineraryLocation
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -45,17 +47,12 @@ class PickDestinationFragment : Fragment() {
         (activity as MainActivity).hideBottomNavigation()
 
         val autocompleteFragment = childFragmentManager.findFragmentById(R.id.searchFragment) as AutocompleteSupportFragment
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
+        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.RATING))
         autocompleteFragment.setTypeFilter(TypeFilter.CITIES)
 
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                selectedLocation =
-                    place.name?.let { place.latLng?.let { it1 ->
-                        SelectedLocation(it,
-                            it1, emptyList(), emptyList())
-                    } }!!
-                itinereryViewModel.setDestination(selectedLocation)
+                selectedLocation = ItineraryLocation(0.toString(), place.id, place.name, place.address, place.latLng!!, OpeningHours(true), false, "", "", place.rating, "", null, null)
                 view.findViewById<Button>(R.id.startPlanning).isEnabled = true
             }
 
@@ -74,6 +71,7 @@ class PickDestinationFragment : Fragment() {
             val bundle = Bundle()
             bundle.putString("place", selectedLocation.address)
             bundle.putParcelable("location", selectedLocation.latLng)
+            bundle.putParcelable("selLocation", selectedLocation)
             fragment.arguments = bundle
 
 

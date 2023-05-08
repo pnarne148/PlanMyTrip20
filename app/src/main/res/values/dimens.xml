@@ -5,7 +5,7 @@
     <dimen name="app_bar_height">220dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
-    <dimen name="title_padding">20dp</dimen>
+    <dimen name="title_padding">40dp</dimen>
     <dimen name="heading_margin">32dp</dimen>
     <dimen name="content_margin">100dp</dimen>
     <dimen name="content_padding">10dp</dimen>

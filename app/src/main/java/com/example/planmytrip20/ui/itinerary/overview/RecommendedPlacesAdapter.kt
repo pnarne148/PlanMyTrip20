@@ -4,21 +4,16 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.planmytrip20.R
-import com.example.planmytrip20.classes.RecommendedLocations
-import com.example.planmytrip20.databinding.CardChosenPlacesBinding
+import com.example.planmytrip20.classes.ItineraryLocation
 import com.example.planmytrip20.databinding.CardRecommendedPlacesBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Transformation
-import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 
 
-public class RecommendedPlacesAdapter (
+public class RecommendedPlacesAdapter(
     private val context: Context,
     private val viewModel: ItineraryViewModel,
-    private val values: List<RecommendedLocations>
+    private val values: List<ItineraryLocation>
 ) : RecyclerView.Adapter<RecommendedPlacesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -38,7 +33,7 @@ public class RecommendedPlacesAdapter (
     inner class ViewHolder(private val binding: CardRecommendedPlacesBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(location: RecommendedLocations) {
+        fun bind(location: ItineraryLocation) {
             binding.placeName.text = location.name
 
             if(location.bitmap==null)

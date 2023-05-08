@@ -55,7 +55,7 @@ class ChecklistRecyclerViewAdapter(private val viewModel: ItineraryViewModel, pr
     ) {
         holder.locationName.text = locations[position].name
         holder.locationDesc.text = locations[position].description
-        holder.ratingBar.numStars = locations[position].rating
+        holder.ratingBar.numStars = locations[position].rating?.toInt() ?: 3
 
         Log.d("Location${position}", "${locations[position]}")
 
