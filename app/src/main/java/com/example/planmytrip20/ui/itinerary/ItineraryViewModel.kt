@@ -43,16 +43,18 @@ class ItineraryViewModel : ViewModel() {
     }
     val notes: LiveData<String> = _notes
 
-    private val _destination = MutableLiveData<SelectedLocation>().apply {
-        value = SelectedLocation("",null, emptyList(), emptyList())
+    private val _destination = MutableLiveData<ItineraryLocation>().apply {
+        value = null
     }
-    val destination: LiveData<SelectedLocation> = _destination
+    val destination: LiveData<ItineraryLocation> = _destination
 
     private val _recommendedPlaces = MutableLiveData<List<ItineraryLocation>>()
     val recommendedPlaces: LiveData<List<ItineraryLocation>> = _recommendedPlaces
 
     private val _chosenPlaces = MutableLiveData<List<ItineraryLocation>>()
     val chosenPlaces: LiveData<List<ItineraryLocation>> = _chosenPlaces
+
+    var nearbyPlaces: List<com.example.planmytrip20.classes.Result> = emptyList()
 
     fun setText(str:String)
     {
@@ -73,9 +75,12 @@ class ItineraryViewModel : ViewModel() {
         _notes.value = str
     }
 
-    fun setDestination(loc : SelectedLocation?)
+    fun setDestination(loc : ItineraryLocation?)
     {
         _destination.value = loc
+        if (loc != null) {
+            fetchNearByPlaces(loc)
+        }
     }
 
     fun getNearbyPlaces()
@@ -83,7 +88,7 @@ class ItineraryViewModel : ViewModel() {
         _destination.value?.let { fetchNearByPlaces(it) }
     }
 
-    fun fetchNearByPlaces(selectedLocation: SelectedLocation) {
+    fun fetchNearByPlaces(selectedLocation: ItineraryLocation) {
         val selLocCoordinates = selectedLocation.latLng
         val urlString = "https://maps.googleapis.com/"
         val retrofitBuilder = Retrofit.Builder()
@@ -107,10 +112,9 @@ class ItineraryViewModel : ViewModel() {
                 response: Response<GMapApiResponseData?>
             ) {
                 val responseBody = response.body()!!
-                selectedLocation.nearByPlaces = responseBody.results
+                nearbyPlaces = responseBody.results
                 Log.d("itinerery", "onCreateView: "+response.body())
-                selectedLocation.selection = List(responseBody.results.size) { false }
-                initializeLists(selectedLocation)
+                initializeLists(nearbyPlaces)
             }
             override fun onFailure(call: Call<GMapApiResponseData?>, t: Throwable) {
                 TODO("Not yet implemented")
@@ -118,18 +122,12 @@ class ItineraryViewModel : ViewModel() {
         })
     }
 
-    fun setDestination(place: String?, location: LatLng?) {
-        val selLocation = SelectedLocation(place,location, emptyList(), emptyList())
-        setDestination(selLocation)
-        fetchNearByPlaces(selLocation)
-        Log.d("itinerery", "onCreateView: "+selLocation.nearByPlaces.size)
-    }
 
-    fun initializeLists(selLocation: SelectedLocation) {
-        Log.d("itinerery", "onCreateView:===== ${selLocation.nearByPlaces.size}")
+    fun initializeLists(nearbyPlaces: List<com.example.planmytrip20.classes.Result>) {
+        Log.d("itinerery", "onCreateView:===== ${nearbyPlaces.size}")
 
         viewModelScope.launch {
-            val recommendedLocations = selLocation.nearByPlaces.mapIndexedNotNull { index, result ->
+            val recommendedLocations = nearbyPlaces.mapIndexedNotNull { index, result ->
                 val lat = result.geometry?.location?.lat
                 val lng = result.geometry?.location?.lng
                 if (lat != null && lng != null) {

@@ -14,6 +14,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.planmytrip20.R
 import com.example.planmytrip20.WebScrape.WikipediaApi
+import com.example.planmytrip20.classes.ItineraryLocation
 import com.example.planmytrip20.ui.itinerary.overview.OverviewFragment
 import com.example.planmytrip20.ui.itinerary.tripDetails.TripPlanFragment
 import com.google.android.material.appbar.AppBarLayout
@@ -34,6 +35,8 @@ class ItineraryFragment : Fragment() {
     private var _binding: FragmentItineraryBinding? = null
     private lateinit var tabs: TabLayout
     private lateinit var viewPager: ViewPager2
+    private lateinit var selectedLocation: ItineraryLocation
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -47,22 +50,22 @@ class ItineraryFragment : Fragment() {
     ): View {
         var place: String
         val location: LatLng
-        if(arguments != null) {
-            place = requireArguments().getString("place").toString()
-            location = requireArguments().getParcelable<LatLng>("location")!!
-            Log.d(TAG, "onCreateView: "+place)
-        }
-        else{
-            place = "Paris"
-            location = LatLng(48.8566, 2.3522)
+        arguments?.let { bundle ->
+            val place = bundle.getString("place")
+            val latLng = bundle.getParcelable<LatLng>("location")
+            selectedLocation = bundle.getParcelable<ItineraryLocation>("selLocation")!!
+
+            Log.d("ItineraryFragment", "place: $place")
+            Log.d("ItineraryFragment", "latLng: $latLng")
+            Log.d("ItineraryFragment", "selectedLocation: $selectedLocation")
         }
 
-        Log.d(TAG, "onCreateView: "+place)
+//        Log.d(TAG, "onCreateView: "+place)
 
         val itinereryViewModel =
             ViewModelProvider(this).get(ItineraryViewModel::class.java)
 
-        itinereryViewModel.setDestination(place, location)
+        itinereryViewModel.setDestination(selectedLocation)
 
         _binding = FragmentItineraryBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -71,8 +74,8 @@ class ItineraryFragment : Fragment() {
         viewPager = binding.viewPager
 
         var appBarLayout = binding.appBar
-        binding.titleBig.text = "Trip to $place"
-        binding.titleSmall.text = "Trip to $place"
+        binding.titleBig.text = "Trip to ${selectedLocation.name}"
+        binding.titleSmall.text = "Trip to ${selectedLocation.name}"
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (Math.abs(verticalOffset) == appBarLayout.totalScrollRange) {
                 binding.shareButton.visibility = View.VISIBLE
@@ -86,7 +89,7 @@ class ItineraryFragment : Fragment() {
         })
 
         CoroutineScope(Dispatchers.IO).launch {
-            val imageURL = WikipediaApi.getImageUrlFromWikipedia(place)
+            val imageURL = selectedLocation.name?.let { WikipediaApi.getImageUrlFromWikipedia(it) }
             Log.d(TAG, "onCreateView: "+imageURL)
             val bitmap = Picasso.get().load(imageURL).resize(1000, 1000).get()
             withContext(Dispatchers.Main) {
