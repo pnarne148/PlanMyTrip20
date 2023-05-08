@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="260dp"
+    android:layout_height="wrap_content"
+    android:padding="1dp"
+    android:layout_marginLeft="@dimen/text_margin"
+    android:background="@drawable/bg_dotted_rectangle">
+
+    <ImageView
+        android:id="@+id/place_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/test_image"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/bg_image_crop"
+        android:clipToOutline="true"
+        android:padding="0dp"
+        />
+
+    <TextView
+        android:id="@+id/place_name"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/text_margin"
+        android:text="Eifel Tower"
+        android:maxLines="2"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="@dimen/paragraph_text_size"
+        app:layout_constraintLeft_toRightOf="@+id/place_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/add_place"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+"
+        android:textColor="@color/lightgray2"
+        android:textSize="@dimen/title_text_size_h3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@drawable/bg_rounded_rect"
+        android:layout_marginRight="@dimen/text_margin"
+        android:paddingHorizontal="@dimen/content_padding"/>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
