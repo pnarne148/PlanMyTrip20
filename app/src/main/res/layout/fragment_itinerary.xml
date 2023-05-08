@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/lightgray"
     tools:context=".ui.itinerary.ItineraryFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -23,7 +24,7 @@
             app:title="Trip to Paris"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:expandedTitleMarginStart="64dp"
             app:titleEnabled="false"
             app:toolbarId="@+id/toolbar">
@@ -42,13 +43,14 @@
                     android:scaleType="centerCrop"
                     />
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_home_white_24dp"
-                    android:layout_margin="@dimen/text_margin"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
+<!--                <ImageView-->
+<!--                    android:id="@+id/home_big"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="40dp"-->
+<!--                    android:src="@drawable/ic_home_white_24dp"-->
+<!--                    android:layout_margin="@dimen/text_margin"-->
+<!--                    app:layout_constraintLeft_toLeftOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"/>-->
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -58,6 +60,16 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:src="@drawable/bg_trip_title"
+                    app:layout_constraintLeft_toLeftOf="@id/title_big"
+                    app:layout_constraintRight_toRightOf="@id/title_big"
+                    app:layout_constraintTop_toTopOf="@id/title_big"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="@id/title_big"/>
+
                 <TextView
                     android:id="@+id/title_big"
                     android:layout_width="wrap_content"
@@ -65,10 +77,12 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:text="Trip to Paris"
+                    android:padding="@dimen/title_padding"
+                    android:textStyle="italic"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     android:textColor="@color/white"
-                    android:textSize="28sp"/>
+                    android:textSize="@dimen/title_text_size"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -82,7 +96,7 @@
                 app:popupTheme="@style/Theme.PlanMyTrip20.PopupOverlay" >
 
                 <ImageButton
-                    android:id="@+id/home_button"
+                    android:id="@+id/home_small"
                     android:layout_width="wrap_content"
                     android:layout_height="?attr/actionBarSize"
                     android:background="@null"
@@ -116,37 +130,33 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintTop_toBottomOf="@+id/tabs">
 
-        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tab_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textAllCaps="false"
+            android:background="?attr/colorOnPrimary"
+            app:tabMode="fixed" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".ui.itinerery.ItinereryFragment">
+            android:layout_marginTop="@dimen/tab_height"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintTop_toBottomOf="@+id/tabs" />
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/tab_height"
-                app:layout_constraintTop_toTopOf="parent"
-                android:background="?attr/colorOnPrimary"
-                app:tabMode="fixed"/>
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/view_pager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintTop_toBottomOf="@+id/tabs" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
