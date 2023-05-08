@@ -240,7 +240,7 @@ class ItineraryViewModel : ViewModel() {
 //                }
 
                 var reccLocation =  (ItineraryLocation("test_id", "test_place_id", "Brighton MA 1",
-                    "50 Winship Street", LatLng(42.9912, -70.456), OpeningHours(true), true, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 5.0))
+                    "50 Winship Street", LatLng(42.9912, -70.456), OpeningHours(true), false, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 5.0))
 
 
                 Log.d("itinerery", "onPlaceSelected: "+_chosenPlaces.value?.size)
