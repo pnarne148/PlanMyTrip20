@@ -43,7 +43,7 @@ class ItineraryFragment : Fragment() {
 
     // This property is only valid between onCreateView and
     // onDestroyView.
-    private val binding get() = _binding!!
+     private val binding get() = _binding!!
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
