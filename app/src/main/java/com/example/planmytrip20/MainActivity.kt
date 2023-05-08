@@ -63,6 +63,8 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    companion object {}
+
     fun hideBottomNavigation() {
         navView.visibility = View.GONE
     }

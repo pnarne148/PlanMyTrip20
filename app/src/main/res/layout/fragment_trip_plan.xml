@@ -11,9 +11,10 @@
         android:id="@+id/list"
         android:name="com.example.planmytrip20.itinerary.tripDetails.TripPlanFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.example.planmytrip20.itinerary.tripDetails.TripPlanFragment"
-        tools:listitem="@layout/itinerary_location_list_item" />
+        tools:listitem="@layout/itinerary_location_list_item"
+        android:padding="10dp"/>
 
 </FrameLayout>
