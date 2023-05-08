@@ -210,51 +210,35 @@ class ItineraryViewModel : ViewModel() {
         _chosenPlaces.value = placesList
     }
 
-    fun addPlace(selLocation: SelectedLocation){
+    fun addPlace(selLocation: ItineraryLocation){
         viewModelScope.launch {
             val lat = selLocation.latLng?.latitude
             val lng = selLocation.latLng?.longitude
             Log.d("itinerery", "onPlaceSelected: "+lat)
             Log.d("itinerery", "onPlaceSelected: "+lng)
 
-            if (lat != null && lng != null) {
-                val imageURL = withContext(Dispatchers.IO) {
-                    selLocation.address?.let { WikipediaApi.getImageUrlFromWikipedia(it) }
-                }
 
-                val desc = withContext(Dispatchers.IO) {
-                    selLocation.address?.let { WikipediaApi.getFirstParagraphFromWikipedia(it) }
-                }
-
-                val bitmap = withContext(Dispatchers.IO) {
-                    Picasso.get().load(imageURL).resize(100, 100).get()
-                }
-
-                Log.d("itinerery", "initializeLists: "+imageURL)
-//                val reccLocation = selLocation.address?.let {
-//                    ItineraryLocation(_recommendedPlaces.value?.size.toString(),
-//
-//                        it, LatLng(lat, lng), imageURL, bitmap, desc)
-//                }
-
-                var reccLocation =  (ItineraryLocation("test_id", "test_place_id", "Brighton MA 1",
-                    "50 Winship Street", LatLng(42.9912, -70.456), OpeningHours(true), true, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 5.0))
-
-
-                Log.d("itinerery", "onPlaceSelected: "+_chosenPlaces.value?.size)
-
-                val currentList = _chosenPlaces.value?.toMutableList() ?: mutableListOf()
-                if (reccLocation != null) {
-                    currentList.add(reccLocation)
-                }
-                _chosenPlaces.value = currentList
-                Log.d("itinerery", "onPlaceSelected: "+_chosenPlaces.value?.size)
-
-
-            } else {
-                null
+            val imageURL = withContext(Dispatchers.IO) {
+                selLocation.name?.let { WikipediaApi.getImageUrlFromWikipedia(it) }
             }
 
+            selLocation.description = withContext(Dispatchers.IO) {
+                selLocation.name?.let { WikipediaApi.getFirstParagraphFromWikipedia(it) }
+            }
+
+            selLocation.bitmap = withContext(Dispatchers.IO) {
+                Picasso.get().load(imageURL).resize(100, 100).get()
+            }
+
+            selLocation.wikiUrl = selLocation.name?.let { WikipediaApi.getURL(it) }
+
+
+            val currentList = _chosenPlaces.value?.toMutableList() ?: mutableListOf()
+            if (selLocation != null) {
+                currentList.add(selLocation)
+            }
+            _chosenPlaces.value = currentList
+            Log.d("itinerery", "onPlaceSelected: "+_chosenPlaces.value?.size)
         }
     }
 

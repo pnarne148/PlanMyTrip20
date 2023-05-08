@@ -40,7 +40,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/done"
+            android:id="@+id/addFlight"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -48,7 +48,7 @@
             android:textStyle="bold"
             android:textColor="@color/done"
             android:layout_marginHorizontal="@dimen/text_margin"
-            android:text="Done"/>
+            android:text="Add"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <EditText

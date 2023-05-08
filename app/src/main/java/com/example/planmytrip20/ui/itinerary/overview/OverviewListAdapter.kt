@@ -16,7 +16,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.planmytrip20.R
+import com.example.planmytrip20.classes.ItineraryLocation
+import com.example.planmytrip20.classes.OpeningHours
 import com.example.planmytrip20.classes.SelectedLocation
+import com.example.planmytrip20.databinding.CardFlightItemBinding
 import com.example.planmytrip20.databinding.CardNotesItemBinding
 import com.example.planmytrip20.databinding.CardPlacesItemBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
@@ -41,6 +44,7 @@ class OverviewListAdapter(
     companion object {
         const val VIEW_TYPE_NOTES = 1
         const val VIEW_TYPE_PLACES = 2
+        const val VIEW_TYPE_FLIGHTS =3
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -52,6 +56,10 @@ class OverviewListAdapter(
             VIEW_TYPE_PLACES -> {
                 val binding = CardPlacesItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 ViewHolderPlaces(binding)
+            }
+            VIEW_TYPE_FLIGHTS -> {
+                val binding = CardFlightItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ViewHolderFlights(binding)
             }
             else -> throw IllegalArgumentException("Invalid view type")
 
@@ -69,6 +77,10 @@ class OverviewListAdapter(
                 val viewHolderPlaces = holder as ViewHolderPlaces
                 viewHolderPlaces.bind(item)
             }
+            VIEW_TYPE_FLIGHTS -> {
+                val viewHolderFlights = holder as ViewHolderPlaces
+                viewHolderFlights.bind(item)
+            }
         }
     }
 
@@ -78,6 +90,7 @@ class OverviewListAdapter(
         return when (position) {
             0 -> VIEW_TYPE_NOTES
             1 -> VIEW_TYPE_PLACES
+            3 -> VIEW_TYPE_FLIGHTS
             else -> VIEW_TYPE_NOTES
         }
     }
@@ -115,6 +128,26 @@ class OverviewListAdapter(
         }
     }
 
+    inner class ViewHolderFlights(private val binding: CardFlightItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: String) {
+            binding.cardType.text = item
+
+            binding.addFlight.setOnClickListener{
+                //todo: Bottom sheet to fetch flight details
+            }
+
+            binding.dropDown.setOnClickListener {
+
+                if (binding.dropDown.drawable?.constantState?.equals(ContextCompat.getDrawable(context, R.drawable.ic_right_arrow)?.constantState) == true)
+                {
+                }
+                else
+                {
+                }
+            }
+        }
+    }
+
     inner class ViewHolderPlaces(private val binding: CardPlacesItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: String) {
             binding.cardType.text = item
@@ -127,7 +160,6 @@ class OverviewListAdapter(
             )
 
             handleAutoCompleteFrag()
-
 
             with(binding.selectedPlaces) {
                 layoutManager = LinearLayoutManager(context)
@@ -207,7 +239,8 @@ class OverviewListAdapter(
                 )
 
                 val autocompleteFrag = AutocompleteSupportFragment()
-                autocompleteFrag.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
+                autocompleteFrag.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.RATING))
+
                 val locationRestriction = RectangularBounds.newInstance(bounds)
 
                 //code to bound location search
@@ -220,7 +253,9 @@ class OverviewListAdapter(
                 autocompleteFrag.setOnPlaceSelectedListener(object : PlaceSelectionListener {
                     override fun onPlaceSelected(place: Place) {
                         Log.d("itinerery", "onPlaceSelected: "+place.latLng)
-                        viewModel.addPlace(SelectedLocation(place.name, place.latLng, emptyList(), emptyList()))
+                        viewModel.addPlace(
+                            ItineraryLocation(0.toString(), place.id, place.name, place.address, place.latLng!!, OpeningHours(true), false, "", "", place.rating, "", null, null)
+                        )
                     }
 
                     override fun onError(status: Status) {
