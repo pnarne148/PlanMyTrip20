@@ -9,8 +9,11 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
     <color name="green">#004504</color>
-    <color name="lightgray">#717171</color>
     <color name="yellow">#EFBD27</color>
     <color name="link">#2E7AFD</color>
     <color name="card_stroke_color">#BABABA</color>
+    <color name="lightgray">#F2F3F5</color>
+    <color name="lightgray3">#D1D1D3</color>
+    <color name="lightgray2">#6B757F</color>
+    <color name="done">#3F51B5</color>
 </resources>
