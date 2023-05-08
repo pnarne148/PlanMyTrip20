@@ -7,11 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.planmytrip20.MainActivity
 import com.example.planmytrip20.R
 import com.example.planmytrip20.WebScrape.WikipediaApi
 import com.example.planmytrip20.WebScrape.WikipediaScraper
@@ -19,6 +23,7 @@ import com.example.planmytrip20.ui.itinerary.overview.OverviewFragment
 import com.example.planmytrip20.ui.itinerary.tripDetails.TripPlanFragment
 import com.google.android.material.appbar.AppBarLayout
 import com.example.planmytrip20.databinding.FragmentItineraryBinding
+import com.example.planmytrip20.ui.home.HomeFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -76,12 +81,10 @@ class ItineraryFragment : Fragment() {
         binding.titleSmall.text = "Trip to $place"
         appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             if (Math.abs(verticalOffset) == appBarLayout.totalScrollRange) {
-                binding.homeButton.visibility = View.VISIBLE
                 binding.shareButton.visibility = View.VISIBLE
                 binding.titleBig.visibility = View.GONE
                 binding.titleSmall.visibility = View.VISIBLE
             } else {
-                binding.homeButton.visibility = View.GONE
                 binding.shareButton.visibility = View.GONE
                 binding.titleBig.visibility = View.VISIBLE
                 binding.titleSmall.visibility = View.GONE
@@ -97,6 +100,8 @@ class ItineraryFragment : Fragment() {
             }
         }
 
+        handleHomeButton()
+
         // Set up the tabs and view pager
         val adapter = MyPagerAdapter(this)
         viewPager.adapter = adapter
@@ -104,11 +109,39 @@ class ItineraryFragment : Fragment() {
             tab.text = when (position) {
                 0 -> "Overview"
                 1 -> "Trip Plan"
+                2 -> "Photos"
                 else -> ""
             }
         }.attach()
 
+        viewPager.isUserInputEnabled = false
+
         return root
+    }
+
+    private fun handleHomeButton() {
+//        binding.homeBig.setOnClickListener{
+//            removeFragment()
+//        }
+
+        binding.homeSmall.setOnClickListener{
+            removeFragment()
+        }
+    }
+
+    fun removeFragment(){
+//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+//            val fragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+//            if (fragment != null) {
+//                requireActivity().supportFragmentManager.beginTransaction()
+//                    .remove(fragment)
+//                    .commit()
+//            }
+//        }
+        requireActivity().onBackPressed()
+
+//        (activity as MainActivity).openHome()
+//        (activity as MainActivity).showBottomNavigation()
     }
 
     override fun onDestroyView() {

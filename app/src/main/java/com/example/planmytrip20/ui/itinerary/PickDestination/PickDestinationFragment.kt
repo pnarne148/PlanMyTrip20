@@ -56,6 +56,7 @@ class PickDestinationFragment : Fragment() {
                             it1, emptyList(), emptyList())
                     } }!!
                 itinereryViewModel.setDestination(selectedLocation)
+                view.findViewById<Button>(R.id.startPlanning).isEnabled = true
             }
 
             override fun onError(status: Status) {

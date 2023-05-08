@@ -2,27 +2,46 @@ package com.example.planmytrip20.ui.itinerary.overview
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.planmytrip20.R
+import com.example.planmytrip20.classes.Location
+import com.example.planmytrip20.classes.SelectedLocation
 import com.example.planmytrip20.databinding.CardNotesItemBinding
 import com.example.planmytrip20.databinding.CardPlacesItemBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
+import com.example.planmytrip20.ui.itinerary.helpers.ItemTouchHelperCallback
+import com.google.android.gms.common.api.Status
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import java.util.*
 
 
 class OverviewListAdapter(
     private val context: Context,
     private val viewModel: ItineraryViewModel,
     private val viewLifecycleOwner: LifecycleOwner,
-    private val values: List<String>
+    private val values: List<String>,
+    private val fragmentManager: FragmentManager
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -113,8 +132,49 @@ class OverviewListAdapter(
                 )
             )
 
+            handleAutoCompleteFrag()
+
+
             with(binding.selectedPlaces) {
                 layoutManager = LinearLayoutManager(context)
+                clipToPadding = false
+                val itemTouchHelper = ItemTouchHelper(object: ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN or ItemTouchHelper.UP,0){
+                    override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                        super.onSelectedChanged(viewHolder, actionState)
+                        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG) {
+                            viewHolder?.itemView?.elevation = 0f // or any other desired elevation
+                        }else {
+                            viewHolder?.itemView?.elevation = 0f // reset elevation
+                        }
+                    }
+
+                    override fun onMove(
+                        recyclerView: RecyclerView,
+                        viewHolder: RecyclerView.ViewHolder,
+                        target: RecyclerView.ViewHolder
+                    ): Boolean {
+
+                        val fromPosition = viewHolder.adapterPosition
+                        val toPosition = target.adapterPosition
+
+                        viewModel.swapChosenPlaces(fromPosition, toPosition)
+                        notifyDataSetChanged()
+                        adapter?.notifyItemMoved(fromPosition, toPosition)
+                        adapter?.notifyItemChanged(toPosition)
+                        adapter?.notifyItemChanged(fromPosition)
+
+                        Log.d("itinerery", "onMove: testing")
+
+                        return true
+                    }
+
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                        viewModel.unchoosePlace(viewHolder.adapterPosition)
+                        notifyItemRemoved(viewHolder.adapterPosition)
+                    }
+                })
+
+                itemTouchHelper.attachToRecyclerView(this)
 
                 viewModel.chosenPlaces.observe(viewLifecycleOwner, Observer {
                     adapter = ChosenPlacesAdapter(context, viewModel, it)
@@ -141,6 +201,42 @@ class OverviewListAdapter(
                     binding.dropDown.setImageResource(R.drawable.ic_right_arrow)
                 }
             }
+
+        }
+
+        private fun handleAutoCompleteFrag() {
+
+            viewModel.destination.observe(viewLifecycleOwner, Observer {
+                val bounds = LatLngBounds(
+                    LatLng(it.latLng?.latitude?.minus(10) ?: 37.7749, it.latLng?.longitude?.minus(10) ?: -122.4194),
+                    LatLng(it.latLng?.latitude?.minus(10) ?: 37.7749, it.latLng?.longitude?.minus(10) ?: -122.4194),
+                )
+
+                val autocompleteFrag = AutocompleteSupportFragment()
+                autocompleteFrag.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
+                val locationRestriction = RectangularBounds.newInstance(bounds)
+
+                //code to bound location search
+//                autocompleteFrag.setLocationRestriction(locationRestriction)
+
+
+                val transaction = fragmentManager.beginTransaction()
+                transaction.replace(R.id.addLocationFragment, autocompleteFrag)
+                transaction.commit()
+
+                autocompleteFrag.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+                    override fun onPlaceSelected(place: Place) {
+                        Log.d("itinerery", "onPlaceSelected: "+place.latLng)
+                        viewModel.addPlace(SelectedLocation(place.name, place.latLng, emptyList(), emptyList()))
+                    }
+
+                    override fun onError(status: Status) {
+
+                    }
+                })
+
+            })
+
 
         }
     }

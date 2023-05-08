@@ -21,6 +21,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Collections
 
 class ItineraryViewModel : ViewModel() {
 
@@ -174,8 +175,65 @@ class ItineraryViewModel : ViewModel() {
         _recommendedPlaces.value = updatedRecommendedPlaces
     }
 
+    fun unchoosePlace(index: Int) {
+        val updatedChosenPlaces = chosenPlaces.value.orEmpty().toMutableList()
+        val updatedRecommendedPlaces = recommendedPlaces.value.orEmpty().toMutableList()
+
+        val place = updatedChosenPlaces[index]
+        updatedChosenPlaces.remove(place)
+        updatedRecommendedPlaces.add(place)
+
+        _chosenPlaces.value = updatedChosenPlaces
+        _recommendedPlaces.value = updatedRecommendedPlaces
+    }
+
+    fun swapChosenPlaces(pos1: Int, pos2: Int) {
+        val placesList = _chosenPlaces.value?.toMutableList() ?: return
+        if (pos1 < 0 || pos1 >= placesList.size || pos2 < 0 || pos2 >= placesList.size) {
+            return
+        }
+        Collections.swap(placesList, pos1, pos2)
+        _chosenPlaces.value = placesList
+    }
+
+    fun addPlace(selLocation: SelectedLocation){
+        viewModelScope.launch {
+            val lat = selLocation.latLng?.latitude
+            val lng = selLocation.latLng?.longitude
+            Log.d("itinerery", "onPlaceSelected: "+lat)
+            Log.d("itinerery", "onPlaceSelected: "+lng)
+
+            if (lat != null && lng != null) {
+                val imageURL = withContext(Dispatchers.IO) {
+                    selLocation.address?.let { WikipediaApi.getImageUrlFromWikipedia(it) }
+                }
+
+                val desc = withContext(Dispatchers.IO) {
+                    selLocation.address?.let { WikipediaApi.getFirstParagraphFromWikipedia(it) }
+                }
+
+                val bitmap = withContext(Dispatchers.IO) {
+                    Picasso.get().load(imageURL).resize(100, 100).get()
+                }
+
+                Log.d("itinerery", "initializeLists: "+imageURL)
+                val reccLocation = selLocation.address?.let { RecommendedLocations(it, LatLng(lat, lng), imageURL, bitmap, desc) }
+
+                Log.d("itinerery", "onPlaceSelected: "+_chosenPlaces.value?.size)
+
+                val currentList = _chosenPlaces.value?.toMutableList() ?: mutableListOf()
+                if (reccLocation != null) {
+                    currentList.add(reccLocation)
+                }
+                _chosenPlaces.value = currentList
+                Log.d("itinerery", "onPlaceSelected: "+_chosenPlaces.value?.size)
 
 
+            } else {
+                null
+            }
 
+        }
+    }
 
 }

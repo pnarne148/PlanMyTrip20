@@ -36,7 +36,7 @@ class OverviewFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
 
             val values = listOf("Notes", "Places to Visit", "Flights", "Hotels")
-            adapter = OverviewListAdapter(context, itineraryViewModel, viewLifecycleOwner, values)
+            adapter = OverviewListAdapter(context, itineraryViewModel, viewLifecycleOwner, values, childFragmentManager)
         }
 
         return root

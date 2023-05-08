@@ -2,6 +2,7 @@ package com.example.planmytrip20.ui.itinerary.overview
 
 import android.R.attr.radius
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,7 @@ import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
+import java.util.Collections
 
 
 class ChosenPlacesAdapter(
@@ -33,6 +35,27 @@ class ChosenPlacesAdapter(
 
     override fun getItemCount(): Int {
         return values.size
+    }
+
+    fun onItemMoved(fromPosition: Int, toPosition: Int) {
+
+        Log.d("itinerery", "onItemMoved: testing")
+
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                Collections.swap(values, i, i + 1)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                Collections.swap(values, i, i - 1)
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition)
+    }
+
+    fun onItemRemoved(position: Int) {
+//        viewModel.unchoosePlace(position)
+//        notifyItemRemoved(position)
     }
 
     inner class ViewHolder(private val binding: CardChosenPlacesBinding) :
