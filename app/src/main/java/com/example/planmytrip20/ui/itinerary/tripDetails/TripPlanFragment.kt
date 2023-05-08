@@ -35,20 +35,20 @@ class TripPlanFragment(private val viewModelOwner: ViewModelStoreOwner) : Fragme
             ViewModelProvider(viewModelOwner).get(ItineraryViewModel::class.java)
 
         // TODO: Get all the locations that are in itinerary and pass to recyclerview
-        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 1",
-            "50 Winship Street", LatLng(42.9912, -70.456), OpeningHours(true), true, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 5.0))
-
-        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 3",
-            "50 Winship Street ", LatLng(42.9912, -72.456), OpeningHours(true), true, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 4.0))
-        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 2 12312312312321321321321321323213213213213213213123123123213",
-            "50 Winship Street", LatLng(42.9912, -74.456), OpeningHours(true), false, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 3.0))
-        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 4",
-            "50 Winship Street", LatLng(42.9912, -76.456), OpeningHours(true), false, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 2.0))
-        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 7",
-            "50 Winship Street", LatLng(42.9912, -78.456), OpeningHours(true), false, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 2.0))
-
-        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 7",
-            "50 Winship Street", LatLng(42.9912, -80.456), OpeningHours(true), false, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 2.0))
+//        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 1",
+//            "50 Winship Street", LatLng(42.9912, -70.456), OpeningHours(true), true, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 5.0))
+//
+//        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 3",
+//            "50 Winship Street ", LatLng(42.9912, -72.456), OpeningHours(true), true, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 4.0))
+//        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 2 12312312312321321321321321323213213213213213213123123123213",
+//            "50 Winship Street", LatLng(42.9912, -74.456), OpeningHours(true), false, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 3.0))
+//        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 4",
+//            "50 Winship Street", LatLng(42.9912, -76.456), OpeningHours(true), false, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 2.0))
+//        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 7",
+//            "50 Winship Street", LatLng(42.9912, -78.456), OpeningHours(true), false, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 2.0))
+//
+//        locations.add(ItineraryLocation("test_id", "test_place_id", "Brighton MA 7",
+//            "50 Winship Street", LatLng(42.9912, -80.456), OpeningHours(true), false, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 2.0))
 
 
         Log.d(TAG, "testing list: "+locations.size)
