@@ -8,23 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="green">#004504</color>
-    <color name="lightgray">#717171</color>
 
-    <!-- colors related to profile page -->
-    <color name="gradEnd">#67EFC8</color>
-    <color name="gradStart">#63C9FF</color>
-    <color name="circleBorder">#50FFFFFF</color>
-    <color name="solidCircle">#AAFFFFFF</color>
-    <color name="address">#2F7092</color>
-    <color name="followers">#0D5D98</color>
-    <color name="headings">#3797CF</color>
-    <color name="followersBg">#65DCE5</color>
-    <color name="followingBg">#49BEFF</color>
-    <color name="grey">#E5E5E5</color>
-    <color name="yellow">#FFC801</color>
-    <color name="textColor">#518A10</color>
-    <color name="textColorDark">#345310</color>
-    <color name="yellow">#EFBD27</color>
     <color name="link">#2E7AFD</color>
     <color name="card_stroke_color">#BABABA</color>
     <color name="blue">#093AEA</color>
@@ -32,7 +16,7 @@
     <color name="lightgray3">#D1D1D3</color>
     <color name="lightgray2">#6B757F</color>
     <color name="done">#3F51B5</color>
-
+    <color name="red">#FF0000</color>
     <!-- colors related to profile page -->
     <color name="gradEnd">#67EFC8</color>
     <color name="gradStart">#63C9FF</color>
