@@ -1,8 +1,9 @@
 package com.example.planmytrip20.ui.profile
 
-import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -19,11 +20,17 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
+import androidx.navigation.fragment.findNavController
 import coil.load
 import coil.transform.CircleCropTransformation
-import com.example.planmytrip20.databinding.ActivityEditProfileBinding
-import com.example.planmytrip20.databinding.ActivityLoginBinding
+import com.example.planmytrip20.MainActivity
+import com.example.planmytrip20.classes.database
+
+import com.example.planmytrip20.databinding.FragmentEditProfileBinding
 import com.example.planmytrip20.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -39,19 +46,26 @@ import com.karumi.dexter.listener.single.PermissionListener
 import java.io.ByteArrayOutputStream
 import java.util.*
 
-class EditProfileActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityEditProfileBinding
+class EditProfileFragment : Fragment() {
+    private var _binding: FragmentEditProfileBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryLauncher: ActivityResultLauncher<Intent>
     private val storageReference: StorageReference = FirebaseStorage.getInstance().reference
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityEditProfileBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
+        _binding = FragmentEditProfileBinding.inflate(inflater, container, false)
+        val root: View = binding.root
+
+
+        val profileViewModel =
+            ViewModelProvider(this).get(ProfileViewModel::class.java)
         cameraCheckPermission()
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
@@ -59,14 +73,35 @@ class EditProfileActivity : AppCompatActivity() {
             if (photoUrl != null) {
                 displayImageUrl(photoUrl.toString())
             }
+            val userid = user.uid
+            // fetching user details from db
+            database.db.collection("userDetails")
+                .whereEqualTo("uid", userid)
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        if (document != null) {
+                            binding.tvName.setText(document.getString("userName"))
+                            binding.editablePhNo.setText(document.getString("phoneNumber"))
+                            binding.editableEmergencyPhNo.setText(document.getString("emergencyContact"))
+                            binding.editableAddress.setText(document.getString("address"))
+                            android.util.Log.w(TAG, "${document.id} => ${document.data}")
+                        }
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    android.util.Log.w(TAG, "Error getting userDetails.", exception)
+                }
+
         }
+
 
         cameraLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == RESULT_OK) {
                     result.data?.let { data ->
                         val bitmap = data.extras?.get("data") as Bitmap
-                        val uri = bitmap.toUri(this)
+                        val uri = bitmap.toUri(requireContext())
                         uploadImageToFirebaseStorage(uri)
                         //we are using coroutine image loader (coil)
                     }
@@ -87,7 +122,7 @@ class EditProfileActivity : AppCompatActivity() {
 
         //when you click on the image
         binding.profilePhoto.setOnClickListener {
-            val pictureDialog = AlertDialog.Builder(this)
+            val pictureDialog = AlertDialog.Builder(requireContext())
             pictureDialog.setTitle("Select Action")
             val pictureDialogItem = arrayOf(
                 "Select photo from Gallery",
@@ -106,11 +141,61 @@ class EditProfileActivity : AppCompatActivity() {
             }
             pictureDialog.show()
         }
+
+        binding.saveButton.setOnClickListener {
+            val username = binding.tvName.text.toString()
+            val phNo = binding.editablePhNo.text.toString()
+            val emergencyPhNo = binding.editableEmergencyPhNo.text.toString()
+            val address = binding.editableAddress.text.toString()
+            val user = FirebaseAuth.getInstance().currentUser
+            val uid = user?.uid
+            val email = user?.email
+            Log.d(
+                TAG,
+                "updating userdetails for : {} " + username + phNo + emergencyPhNo + address + uid
+            )
+            val userDetails = hashMapOf(
+                "username" to username,
+                "phoneNumber" to phNo,
+                "email" to email,
+                "emergencyContact" to emergencyPhNo,
+                "address" to address,
+                "uid" to uid
+            )
+            if (uid != null) {
+                database.db.collection("userDetails").document(uid).set(userDetails)
+                    .addOnSuccessListener { Log.d(TAG, "Users details successfully updated")
+                        parentFragmentManager.commit {
+                            remove(this@EditProfileFragment)
+                        }
+
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w(TAG, "Error saving user details.", exception)
+                    }
+            }
+
+        }
+        return root
     }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is MainActivity) {
+            context.hideBottomNavigation()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        (requireActivity() as MainActivity).showBottomNavigation()
+    }
+
+
 
     private fun cameraCheckPermission() {
 
-        Dexter.withContext(this)
+        Dexter.withContext(requireContext())
             .withPermissions(
                 android.Manifest.permission.READ_EXTERNAL_STORAGE,
                 android.Manifest.permission.CAMERA
@@ -148,7 +233,7 @@ class EditProfileActivity : AppCompatActivity() {
 
     private fun galleryCheckPermission() {
 
-        Dexter.withContext(this).withPermission(
+        Dexter.withContext(requireContext()).withPermission(
             android.Manifest.permission.READ_EXTERNAL_STORAGE
         ).withListener(object : PermissionListener {
             override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
@@ -157,7 +242,7 @@ class EditProfileActivity : AppCompatActivity() {
 
             override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
                 Toast.makeText(
-                    applicationContext,
+                    requireContext(),
                     "You have denied the storage permission to select image",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -174,7 +259,7 @@ class EditProfileActivity : AppCompatActivity() {
     }
 
     private fun showRotationalDialogForPermission() {
-        AlertDialog.Builder(applicationContext)
+        AlertDialog.Builder(requireContext())
             .setMessage(
                 "It looks like you have turned off permissions"
                         + "required for this feature. It can be enable under App settings!!!"
@@ -184,7 +269,7 @@ class EditProfileActivity : AppCompatActivity() {
 
                 try {
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package", applicationContext.packageName, null)
+                    val uri = Uri.fromParts("package", requireContext().packageName, null)
                     intent.data = uri
                     startActivity(intent)
 
@@ -232,7 +317,7 @@ class EditProfileActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Toast.makeText(
-                    applicationContext,
+                    requireContext(),
                     "Failed to upload image: ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()

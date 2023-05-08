@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.profile.ProfileFragment">
+    tools:context=".ui.profile.EditProfileFragment">
 
     <RelativeLayout
         android:id="@+id/rellay1"
@@ -40,43 +40,50 @@
 
         </RelativeLayout>
 
-        <TextView
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="19dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:text="save"
+            android:textColor="@color/address"
+            android:textSize="14sp"
+            android:background="@drawable/underline_text"
+            android:padding="0dp"
+            android:elevation="20dp" />
+
+        <EditText
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/imgUser"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="15sp"
+            android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-light"
             android:text="Joey Tribbiani"
             android:textColor="@color/white"
             android:textSize="32sp" />
 
-
         <TextView
-            android:id="@+id/tv_address"
+            android:id="@+id/btn_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name"
             android:layout_centerHorizontal="true"
             android:fontFamily="sans-serif"
-            android:text="new york, usa"
+            android:text="edit password"
             android:textAllCaps="true"
             android:textColor="@color/address"
-            android:textSize="14sp" />
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"
-            android:adjustViewBounds="true"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_settings" />
+            android:textSize="14sp"
+            android:background="@drawable/underline_text"
+            android:padding="0dp"
+            android:elevation="20dp"/>
 
     </RelativeLayout>
-
 
      <RelativeLayout
         android:layout_width="match_parent"
@@ -112,11 +119,7 @@
                     android:textColor="#000000"
                     android:textSize="18sp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
+
 
             </LinearLayout>
 
@@ -133,7 +136,8 @@
                     android:textColor="@color/headings"
                     android:textSize="13sp" />
 
-                <TextView
+                <EditText
+                    android:id="@+id/editablePhNo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
@@ -141,11 +145,7 @@
                     android:textColor="#000000"
                     android:textSize="18sp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
+
 
             </LinearLayout>
 
@@ -158,11 +158,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Twitter"
+                    android:text="EmergencyContactNumber"
                     android:textColor="@color/headings"
                     android:textSize="13sp" />
 
-                <TextView
+                <EditText
+                    android:id="@+id/editableEmergencyPhNo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
@@ -170,11 +171,7 @@
                     android:textColor="#000000"
                     android:textSize="18sp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
+
 
             </LinearLayout>
 
@@ -187,23 +184,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Facebook"
+                    android:text="Address"
                     android:textColor="@color/headings"
                     android:textSize="13sp" />
 
-                <TextView
+                <EditText
+                    android:id="@+id/editableAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
-                    android:text="facebook.com/joeytrib"
+                    android:text="880 Commonwealth avenue, Boston, 02134"
                     android:textColor="#000000"
                     android:textSize="18sp" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="15dp"
-                    android:background="@color/grey" />
+
 
             </LinearLayout>
 
