@@ -66,9 +66,9 @@ class ItineraryViewModel : ViewModel() {
         _nextLocationIndex.value = value
     }
 
-    fun setPrevLocationIndex(value:Int)
-    {
+    fun setPrevLocationIndex(value:Int) {
         _prevLocationIndex.value = value
+    }
 
     fun setNotes(str:String)
     {
