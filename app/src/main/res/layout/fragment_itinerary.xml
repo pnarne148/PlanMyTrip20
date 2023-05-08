@@ -67,7 +67,6 @@
                     app:layout_constraintLeft_toLeftOf="@id/title_big"
                     app:layout_constraintRight_toRightOf="@id/title_big"
                     app:layout_constraintTop_toTopOf="@id/title_big"
-                    android:scaleType="centerCrop"
                     app:layout_constraintBottom_toBottomOf="@id/title_big"/>
 
                 <TextView
@@ -78,7 +77,6 @@
                     app:layout_constraintTop_toTopOf="parent"
                     android:text="Trip to Paris"
                     android:padding="@dimen/title_padding"
-                    android:textStyle="italic"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     android:textColor="@color/white"

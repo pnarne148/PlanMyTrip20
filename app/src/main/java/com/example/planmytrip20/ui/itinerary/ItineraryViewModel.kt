@@ -8,9 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.planmytrip20.R
 import com.example.planmytrip20.WebScrape.WikipediaApi
 import com.example.planmytrip20.api.MapApiService
-import com.example.planmytrip20.classes.GMapApiResponseData
-import com.example.planmytrip20.classes.RecommendedLocations
-import com.example.planmytrip20.classes.SelectedLocation
+import com.example.planmytrip20.classes.*
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
@@ -50,11 +48,11 @@ class ItineraryViewModel : ViewModel() {
     }
     val destination: LiveData<SelectedLocation> = _destination
 
-    private val _recommendedPlaces = MutableLiveData<List<RecommendedLocations>>()
-    val recommendedPlaces: LiveData<List<RecommendedLocations>> = _recommendedPlaces
+    private val _recommendedPlaces = MutableLiveData<List<ItineraryLocation>>()
+    val recommendedPlaces: LiveData<List<ItineraryLocation>> = _recommendedPlaces
 
-    private val _chosenPlaces = MutableLiveData<List<RecommendedLocations>>()
-    val chosenPlaces: LiveData<List<RecommendedLocations>> = _chosenPlaces
+    private val _chosenPlaces = MutableLiveData<List<ItineraryLocation>>()
+    val chosenPlaces: LiveData<List<ItineraryLocation>> = _chosenPlaces
 
     fun setText(str:String)
     {
@@ -85,7 +83,7 @@ class ItineraryViewModel : ViewModel() {
         _destination.value?.let { fetchNearByPlaces(it) }
     }
 
-    private fun fetchNearByPlaces(selectedLocation: SelectedLocation) {
+    fun fetchNearByPlaces(selectedLocation: SelectedLocation) {
         val selLocCoordinates = selectedLocation.latLng
         val urlString = "https://maps.googleapis.com/"
         val retrofitBuilder = Retrofit.Builder()
@@ -131,7 +129,7 @@ class ItineraryViewModel : ViewModel() {
         Log.d("itinerery", "onCreateView:===== ${selLocation.nearByPlaces.size}")
 
         viewModelScope.launch {
-            val recommendedLocations = selLocation.nearByPlaces.mapNotNull { result ->
+            val recommendedLocations = selLocation.nearByPlaces.mapIndexedNotNull { index, result ->
                 val lat = result.geometry?.location?.lat
                 val lng = result.geometry?.location?.lng
                 if (lat != null && lng != null) {
@@ -149,7 +147,8 @@ class ItineraryViewModel : ViewModel() {
 
                     Log.d("itinerery", "initializeLists: "+imageURL)
                     RecommendedLocations(result.name, LatLng(lat, lng), imageURL, bitmap, desc)
-
+                    ItineraryLocation(index.toString(), result.place_id, result.name, result.name, LatLng(lat, lng),
+                        result.opening_hours, false, desc, imageURL, result.rating, WikipediaApi.getURL(result.name), null, bitmap)
                 } else {
                     null
                 }
@@ -162,14 +161,12 @@ class ItineraryViewModel : ViewModel() {
     }
 
 
-    fun choosePlace(recommendedLocation: RecommendedLocations) {
+    fun choosePlace(recommendedLocation: ItineraryLocation) {
         val recommendedList = _recommendedPlaces.value.orEmpty().toMutableList()
         val chosenList = _chosenPlaces.value.orEmpty().toMutableList()
 
-        // Find the index of the recommendedLocation in the recommendedPlaces list
         val index = recommendedList.indexOfFirst { it.name == recommendedLocation.name && it.latLng == recommendedLocation.latLng }
 
-        // Remove the recommendedLocation from the recommendedPlaces list
         if (index != -1) {
             recommendedList.removeAt(index)
         }
@@ -183,7 +180,7 @@ class ItineraryViewModel : ViewModel() {
         _chosenPlaces.value = chosenList
     }
 
-    fun unchoosePlace(place: RecommendedLocations) {
+    fun unchoosePlace(place: ItineraryLocation) {
         val updatedChosenPlaces = chosenPlaces.value.orEmpty().toMutableList()
         val updatedRecommendedPlaces = recommendedPlaces.value.orEmpty().toMutableList()
 
@@ -236,7 +233,15 @@ class ItineraryViewModel : ViewModel() {
                 }
 
                 Log.d("itinerery", "initializeLists: "+imageURL)
-                val reccLocation = selLocation.address?.let { RecommendedLocations(it, LatLng(lat, lng), imageURL, bitmap, desc) }
+//                val reccLocation = selLocation.address?.let {
+//                    ItineraryLocation(_recommendedPlaces.value?.size.toString(),
+//
+//                        it, LatLng(lat, lng), imageURL, bitmap, desc)
+//                }
+
+                var reccLocation =  (ItineraryLocation("test_id", "test_place_id", "Brighton MA 1",
+                    "50 Winship Street", LatLng(42.9912, -70.456), OpeningHours(true), true, "The contents within a card should follow their own accessibility guidelines, such as images having content descriptions set on them.", rating = 5.0))
+
 
                 Log.d("itinerery", "onPlaceSelected: "+_chosenPlaces.value?.size)
 

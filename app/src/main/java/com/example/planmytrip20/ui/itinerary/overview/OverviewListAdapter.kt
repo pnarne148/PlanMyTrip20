@@ -3,12 +3,10 @@ package com.example.planmytrip20.ui.itinerary.overview
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -18,22 +16,17 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.planmytrip20.R
-import com.example.planmytrip20.classes.Location
 import com.example.planmytrip20.classes.SelectedLocation
 import com.example.planmytrip20.databinding.CardNotesItemBinding
 import com.example.planmytrip20.databinding.CardPlacesItemBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
-import com.example.planmytrip20.ui.itinerary.helpers.ItemTouchHelperCallback
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.RectangularBounds
-import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import java.util.*
 
 
 class OverviewListAdapter(
@@ -61,6 +54,7 @@ class OverviewListAdapter(
                 ViewHolderPlaces(binding)
             }
             else -> throw IllegalArgumentException("Invalid view type")
+
         }
     }
 
@@ -219,9 +213,8 @@ class OverviewListAdapter(
                 //code to bound location search
 //                autocompleteFrag.setLocationRestriction(locationRestriction)
 
-
                 val transaction = fragmentManager.beginTransaction()
-                transaction.replace(R.id.addLocationFragment, autocompleteFrag)
+                transaction.replace((R.id.addLocationFragment), autocompleteFrag)
                 transaction.commit()
 
                 autocompleteFrag.setOnPlaceSelectedListener(object : PlaceSelectionListener {

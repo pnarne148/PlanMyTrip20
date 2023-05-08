@@ -1,5 +1,6 @@
 package com.example.planmytrip20.classes
 
+import android.graphics.Bitmap
 import com.google.android.gms.maps.model.LatLng
 
 data class ItineraryLocation(
@@ -8,11 +9,12 @@ data class ItineraryLocation(
     var name: String,
     var address: String,
     var latLng: LatLng,
-    var openingHours: OpeningHours,
+    var openingHours: OpeningHours?,
     var visited : Boolean = false,
-    var description: String,
+    var description: String?,
     val location_image_url: String? = null,
-    var rating: Int,
+    var rating: Double,
     var wikiUrl: String? = null,
-    var user_photo_urls: List<String>? = null
+    var user_photo_urls: List<String>? = null,
+    var bitmap: Bitmap? = null
 )

@@ -6,24 +6,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.NavHostFragment
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.example.planmytrip20.MainActivity
 import com.example.planmytrip20.R
 import com.example.planmytrip20.WebScrape.WikipediaApi
-import com.example.planmytrip20.WebScrape.WikipediaScraper
 import com.example.planmytrip20.ui.itinerary.overview.OverviewFragment
 import com.example.planmytrip20.ui.itinerary.tripDetails.TripPlanFragment
 import com.google.android.material.appbar.AppBarLayout
 import com.example.planmytrip20.databinding.FragmentItineraryBinding
-import com.example.planmytrip20.ui.home.HomeFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -94,7 +88,7 @@ class ItineraryFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             val imageURL = WikipediaApi.getImageUrlFromWikipedia(place)
             Log.d(TAG, "onCreateView: "+imageURL)
-            val bitmap = Picasso.get().load(imageURL).get()
+            val bitmap = Picasso.get().load(imageURL).resize(1000, 1000).get()
             withContext(Dispatchers.Main) {
                 binding.placeBg.setImageBitmap(bitmap)
             }
@@ -120,28 +114,13 @@ class ItineraryFragment : Fragment() {
     }
 
     private fun handleHomeButton() {
-//        binding.homeBig.setOnClickListener{
-//            removeFragment()
-//        }
-
         binding.homeSmall.setOnClickListener{
             removeFragment()
         }
     }
 
     fun removeFragment(){
-//        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-//            val fragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
-//            if (fragment != null) {
-//                requireActivity().supportFragmentManager.beginTransaction()
-//                    .remove(fragment)
-//                    .commit()
-//            }
-//        }
         requireActivity().onBackPressed()
-
-//        (activity as MainActivity).openHome()
-//        (activity as MainActivity).showBottomNavigation()
     }
 
     override fun onDestroyView() {
@@ -150,14 +129,14 @@ class ItineraryFragment : Fragment() {
     }
 
     // Define your pager adapter class
-    private inner class MyPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+    private inner class MyPagerAdapter(private val fragment: Fragment) : FragmentStateAdapter(fragment) {
         override fun getItemCount(): Int = 2
 
         override fun createFragment(position: Int): Fragment {
             // Return the fragment for the corresponding tab position
             return when (position) {
-                0 -> OverviewFragment()
-                1 -> TripPlanFragment()
+                0 -> OverviewFragment(fragment)
+                1 -> TripPlanFragment(fragment)
                 else -> throw IllegalArgumentException("Invalid tab position")
             }
         }
@@ -170,7 +149,7 @@ class ItineraryFragment : Fragment() {
             if (fragment != null) {
                 requireActivity().supportFragmentManager.beginTransaction()
                     .remove(fragment)
-                    .commit()
+                    .commitAllowingStateLoss()
             }
         }
     }

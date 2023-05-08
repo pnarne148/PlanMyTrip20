@@ -65,7 +65,7 @@
             android:background="@drawable/bg_rounded_rect">
 
 
-            <fragment
+            <FrameLayout
                 android:id="@+id/addLocationFragment"
                 android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
                 android:layout_width="match_parent"
