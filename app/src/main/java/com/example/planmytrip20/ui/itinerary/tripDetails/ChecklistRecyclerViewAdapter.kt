@@ -1,6 +1,7 @@
 package com.example.planmytrip20.ui.itinerary.tripDetails
 
 import android.content.Context
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,19 +11,23 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.planmytrip20.R
 import com.example.planmytrip20.classes.ItineraryLocation
 import com.example.planmytrip20.databinding.ItineraryLocationListItemBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
+import com.example.planmytrip20.ui.itinerary.maps.MapBottomSheetFragment
 import com.google.android.material.card.MaterialCardView
+import com.google.gson.GsonBuilder
+
 
 class ChecklistRecyclerViewAdapter(
     private val context: Context,
     private val viewModel: ItineraryViewModel,
     private val locations: List<ItineraryLocation>,
-    private val lastVisited: Int
+    private val lastVisited: Int,
 ):
     RecyclerView.Adapter<ChecklistRecyclerViewAdapter.ModelViewHolder>()  {
 
@@ -93,7 +98,7 @@ class ChecklistRecyclerViewAdapter(
             holder.checkBox.isEnabled = true
 
         holder.checkBox.setOnCheckedChangeListener { _, checked ->
-            Log.d("Adapter", "This is a OnCheckedChangeListener")
+            Log.d(TAG, "This is a OnCheckedChangeListener")
             if(checked)
             {
                 viewModel.setIndex(lastVisited+1)
@@ -108,16 +113,16 @@ class ChecklistRecyclerViewAdapter(
 
         if(position != locations.size - 1){
             holder.carDirection.setOnClickListener{
-                openMap?.invoke(locations[position], locations[position + 1], "DRIVING")
+                viewOnMap(locations[position], locations[position + 1], "DRIVING")
             }
             holder.bikeDirection.setOnClickListener{
-                openMap?.invoke(locations[position], locations[position + 1], "BICYCLE")
+                viewOnMap(locations[position], locations[position + 1], "BICYCLE")
             }
             holder.restaurantView.setOnClickListener{
-                openMap?.invoke(locations[position], locations[position + 1], "restaurant")
+                viewOnMap(locations[position], locations[position + 1], "restaurant")
             }
             holder.gasStationView.setOnClickListener{
-                openMap?.invoke(locations[position], locations[position + 1], "gas_station")
+                viewOnMap(locations[position], locations[position + 1], "gas_station")
             }
         }
 
@@ -126,7 +131,6 @@ class ChecklistRecyclerViewAdapter(
         }
 
         holder.webViewLocation.setOnClickListener{
-//            openWebView?.invoke(locations[position].wikiUrl.toString())
             holder.locDesc.maxLines = Integer.MAX_VALUE
             holder.hideDesc.visibility = View.VISIBLE
             holder.webViewLocation.visibility = View.GONE
@@ -139,6 +143,17 @@ class ChecklistRecyclerViewAdapter(
             holder.hideDesc.visibility = View.GONE
         }
 
+    }
+
+    private fun viewOnMap(loc1: ItineraryLocation, loc2: ItineraryLocation, mapType: String) {
+        val modal = MapBottomSheetFragment()
+        val bundle = Bundle()
+        modal.dialog
+        bundle.putString("source", GsonBuilder().create().toJson(loc1))
+        bundle.putString("destination", GsonBuilder().create().toJson(loc2))
+        bundle.putString("mapType", mapType)
+        modal.arguments = bundle
+        modal.show((context as AppCompatActivity).supportFragmentManager, "Map bottom sheet")
     }
 
     override fun getItemCount(): Int {
