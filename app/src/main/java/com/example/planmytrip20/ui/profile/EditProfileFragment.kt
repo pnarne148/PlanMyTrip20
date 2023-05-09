@@ -100,12 +100,50 @@ class EditProfileFragment : Fragment(), OnBackPressedListener {
                 .addOnSuccessListener { result ->
                     for (document in result) {
                         if (document != null) {
-                            binding.tvName.setText(document.getString("userName"))
-                            binding.editablePhNo.setText(document.getString("phoneNumber"))
-                            binding.editableEmergencyPhNo.setText(document.getString("emergencyContact"))
-                            binding.editableAddress.setText(document.getString("address"))
-                            binding.sosOn.isChecked = document.getString("sos").toBoolean()
-                            binding.premiumUser.isChecked = document.getString("isPremiumActive").toBoolean()
+                            val email = document.getString("email")
+                            if (!email.isNullOrEmpty()) {
+                                binding.email.text = email
+                            }
+                            val userName = document.getString("userName")
+                            val phoneNumber = document.getString("phoneNumber")
+                            val emergencyContact = document.getString("emergencyContact")
+                            val address = document.getString("address")
+                            val sos = document.getString("sos")?.toBoolean()
+                            val isPremiumActive = document.getString("isPremiumActive")?.toBoolean()
+
+                            if (!userName.isNullOrEmpty()) {
+                                binding.tvName.setText(userName)
+                            }
+
+                            if (!phoneNumber.isNullOrEmpty()) {
+                                binding.editablePhNo.setText(phoneNumber)
+                            }
+
+                            if (!emergencyContact.isNullOrEmpty()) {
+                                binding.editableEmergencyPhNo.setText(emergencyContact)
+                            }
+
+                            if (!address.isNullOrEmpty()) {
+                                binding.editableAddress.setText(address)
+                            }
+
+                            sos?.let {
+                                binding.sosOn.isChecked = it
+                            }
+
+                            isPremiumActive?.let {
+                                binding.premiumUser.isChecked = it
+                            }
+
+
+                            sos?.let {
+                                binding.sosOn.isChecked = it
+                            }
+
+                            isPremiumActive?.let {
+                                binding.premiumUser.isChecked = it
+                            }
+
                             android.util.Log.w(TAG, "${document.id} => ${document.data}")
                         }
                     }
