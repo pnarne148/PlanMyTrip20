@@ -40,7 +40,10 @@ class TripPlanFragment(private val viewModelOwner: ViewModelStoreOwner) : Fragme
     private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
 
     private fun startGalleryIntent() {
-        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "image/*"
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        }
         cameraLauncher.launch(galleryIntent)
     }
 
@@ -68,11 +71,19 @@ class TripPlanFragment(private val viewModelOwner: ViewModelStoreOwner) : Fragme
             ViewModelProvider(viewModelOwner).get(ItineraryViewModel::class.java)
         cameraLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-                val imageUri = result.data?.data
-                if (imageUri != null) {
-                    uploadImageToFirebaseStorage(imageUri)
+                val clipData = result.data?.clipData
+                if (clipData != null) {
+                    for (i in 0 until clipData.itemCount) {
+                        val imageUri = clipData.getItemAt(i).uri
+                        uploadImageToFirebaseStorage(imageUri)
+                    }
                 } else {
-                    Log.e(TAG, "Image URI is null")
+                    val imageUri = result.data?.data
+                    if (imageUri != null) {
+                        uploadImageToFirebaseStorage(imageUri)
+                    } else {
+                        Log.e(TAG, "Image URI is null")
+                    }
                 }
             }
         }
