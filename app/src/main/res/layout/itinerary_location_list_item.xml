@@ -119,8 +119,20 @@
                     android:gravity="right"
                     android:layout_width="match_parent">
                     <TextView
+                        android:id="@+id/hide_desc"
+                        android:text="Hide Desc"
+                        android:drawableLeft="@drawable/baseline_hide_source_24"
+                        android:drawableTint="@color/red"
+                        android:textColor="@color/link"
+                        android:gravity="center_vertical"
+                        android:includeFontPadding="false"
+                        android:layout_width="wrap_content"
+                        android:padding="2dp"
+                        android:visibility="invisible"
+                        android:layout_height="wrap_content"/>
+                    <TextView
                         android:id="@+id/web_view_location"
-                        android:text="View"
+                        android:text="View Desc"
                         android:drawableLeft="@drawable/eye_24"
                         android:drawableTint="@color/link"
                         android:textColor="@color/link"
@@ -129,6 +141,7 @@
                         android:layout_width="wrap_content"
                         android:padding="2dp"
                         android:layout_height="wrap_content"/>
+
                     <TextView
                         android:id="@+id/add_photos"
                         android:text="Add Photos"

@@ -30,6 +30,7 @@ import coil.transform.CircleCropTransformation
 import com.example.planmytrip.auth.LoginActivity
 import com.example.planmytrip20.R
 import com.example.planmytrip20.databinding.FragmentProfileBinding
+import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.storage.FirebaseStorage
@@ -62,8 +63,11 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
+        val itineraryViewModel =
+            ViewModelProvider(this).get(ItineraryViewModel::class.java)
+
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+
 
 
         val profileViewModel =
