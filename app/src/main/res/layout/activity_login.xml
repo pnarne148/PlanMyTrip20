@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E2D9BE"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -94,6 +94,7 @@
         android:layout_gravity="center"
         android:text="LOGIN"
         android:background="@drawable/round_button"
+        android:backgroundTint="@color/green"
         android:paddingHorizontal="60dp"
         android:paddingVertical="10dp"
         android:layout_marginTop="25dp"

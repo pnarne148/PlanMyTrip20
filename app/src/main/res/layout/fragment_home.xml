@@ -27,7 +27,7 @@
             android:id="@+id/welcomeTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/welcome_background"
+            android:background="@drawable/grad"
             android:focusable="true"
             android:fontFamily="sans-serif-light"
             android:gravity="center_horizontal"
