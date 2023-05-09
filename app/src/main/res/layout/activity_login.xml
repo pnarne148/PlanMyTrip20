@@ -158,9 +158,6 @@
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent">
 
-
-
-
         <ImageView
             android:id="@+id/googleSignIn"
             android:layout_width="50dp"
@@ -175,7 +172,12 @@
             android:background="@drawable/circle"
             android:padding="3dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_google_plus" />
+            android:src="@drawable/ic_google_plus"
+            android:colorFilter="#808080"
+        android:colorFilterBlendMode="multiply"
+            android:clickable="false"
+            android:focusable="false"/>
+
 
     </LinearLayout>
 

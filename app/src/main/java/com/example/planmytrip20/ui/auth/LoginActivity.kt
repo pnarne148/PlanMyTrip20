@@ -1,14 +1,17 @@
 package com.example.planmytrip.auth
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.planmytrip20.MainActivity
 import com.example.planmytrip20.R
+import com.example.planmytrip20.classes.database
 
 import com.example.planmytrip20.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -67,10 +70,10 @@ class LoginActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this , gso)
 
-        binding.googleSignIn.setOnClickListener()
-        {
-            signInGoogle()
-        }
+//        binding.googleSignIn.setOnClickListener()
+//        {
+//            signInGoogle()
+//        }
 
 
         binding.loginBtn.setOnClickListener {
@@ -133,6 +136,25 @@ class LoginActivity : AppCompatActivity() {
         if (task.isSuccessful){
             val account : GoogleSignInAccount? = task.result
             if (account != null){
+                val username = firebaseAuth.currentUser?.email
+                val uid= firebaseAuth.currentUser?.uid
+                val userDetails = hashMapOf(
+                    "userName" to username,
+                    "uid" to uid
+                )
+                if (uid != null) {
+                    database.db.collection("userDetails").document(uid).set(userDetails)
+                        .addOnSuccessListener {
+                            Log.d(ContentValues.TAG, "Users details successfully updated")
+                            val intent = Intent(this, LoginActivity::class.java)
+                            startActivity(intent)
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.w(ContentValues.TAG, "Error saving user details.", exception)
+                        }
+                }
+
+
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             }
