@@ -97,8 +97,14 @@ class QuizViewModel(private val savedStateHandle: SavedStateHandle) : ViewModel(
     val currentQuestionOptions: List<String>
         get() = questionBank[currentIndex].options
 
-    fun getQuestionsAndAnswers(): List<Pair<String, String>> {
-        return questionBank.map { it.question to it.options[it.selectedOption] }
+    fun getQuestionsAndAnswers(): List<Pair<String, String?>> {
+        return questionBank.map {
+            if (it.selectedOption == -1) {
+                it.question to null
+            } else {
+                it.question to it.options[it.selectedOption]
+            }
+        }
     }
     fun moveToNext() {
         currentIndex = (currentIndex + 1) % questionBank.size

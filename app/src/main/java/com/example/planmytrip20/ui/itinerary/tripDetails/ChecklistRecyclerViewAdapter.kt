@@ -1,7 +1,14 @@
 package com.example.planmytrip20.ui.itinerary.tripDetails
 
+import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,25 +19,50 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+
 import com.example.planmytrip20.R
 import com.example.planmytrip20.classes.ItineraryLocation
 import com.example.planmytrip20.databinding.ItineraryLocationListItemBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
 import com.example.planmytrip20.ui.itinerary.maps.MapBottomSheetFragment
 import com.google.android.material.card.MaterialCardView
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import com.google.gson.GsonBuilder
-
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import java.util.*
 
 class ChecklistRecyclerViewAdapter(
+
+
     private val context: Context,
     private val viewModel: ItineraryViewModel,
     private val locations: List<ItineraryLocation>,
     private val lastVisited: Int,
+    private val startGalleryIntent: () -> Unit
 ):
     RecyclerView.Adapter<ChecklistRecyclerViewAdapter.ModelViewHolder>()  {
+
+    private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
+
+    private val storageReference: StorageReference = FirebaseStorage.getInstance().reference
+    private val STORAGE_PERMISSION_CODE = 1001
 
     var openMap : ((ItineraryLocation, ItineraryLocation, String) -> Unit)? = null
 
@@ -38,10 +70,21 @@ class ChecklistRecyclerViewAdapter(
 
     var openWebView : ((String) -> Unit)? = null
 
+
+//    private fun startGalleryIntent() {
+//        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+//        cameraLauncher.launch(galleryIntent)
+//    }
+
+
+
+
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
     ): ChecklistRecyclerViewAdapter.ModelViewHolder {
+
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItineraryLocationListItemBinding.inflate(inflater, parent, false)
         return ModelViewHolder(binding)
@@ -52,6 +95,8 @@ class ChecklistRecyclerViewAdapter(
         holder: ModelViewHolder,
         position: Int,
     ) {
+
+
         holder.locationName.text = locations[position].name
         holder.locationDesc.text = locations[position].description
         holder.ratingBar.numStars = locations[position].rating?.toInt() ?: 3
@@ -143,7 +188,10 @@ class ChecklistRecyclerViewAdapter(
         }
 
         holder.addPhotosLabelView.setOnClickListener{
-            //TODO: Add logic to add photos to each location and retrieve urls
+            //TODO: Add logic to add photos to each location and retrieve urls\
+            startGalleryIntent()
+
+
         }
 
         holder.webViewLocation.setOnClickListener{
@@ -177,6 +225,7 @@ class ChecklistRecyclerViewAdapter(
         return locations.size
     }
 
+
     inner class ModelViewHolder(binding: ItineraryLocationListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
         var locationName : TextView = binding.locationName
@@ -209,4 +258,5 @@ class ChecklistRecyclerViewAdapter(
     companion object {
         const val TAG : String = "Checklist Adapter"
     }
+
 }

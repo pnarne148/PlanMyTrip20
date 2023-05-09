@@ -10,7 +10,6 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.planmytrip20.api.DatabaseRequest
 import com.example.planmytrip20.api.FirebaseHelper
 import com.example.planmytrip20.classes.ItineraryExport
 import com.example.planmytrip20.classes.ItineraryLocation
@@ -62,8 +61,8 @@ class MainActivity : AppCompatActivity() {
 //            Log.d(TAG, "Main Activity Response => ${response.await()}")
 //        }
 
-        var response = DatabaseRequest.getQuery("users", "test", "nothing")
-        Log.d(TAG, "Main Activity Response => ${response.size}")
+//        var response = DatabaseRequest.getQuery("users", "test", "nothing")
+//        Log.d(TAG, "Main Activity Response => ${response.size}")
 
         if (!Places.isInitialized()) {
             Places.initialize(this, getString(R.string.maps_api_key), Locale.US);
@@ -113,4 +112,6 @@ class MainActivity : AppCompatActivity() {
         navView.selectedItemId = R.id.navigation_home
         navView.visibility = View.VISIBLE
     }
+
+
 }

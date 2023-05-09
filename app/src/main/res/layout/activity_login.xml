@@ -175,6 +175,9 @@
             android:src="@drawable/ic_google_plus"
             android:clickable="false"
             android:focusable="false"/>
+        <!--            android:colorFilter="#808080"-->
+        <!--            android:colorFilterBlendMode="multiply"-->
+
 
 
     </LinearLayout>

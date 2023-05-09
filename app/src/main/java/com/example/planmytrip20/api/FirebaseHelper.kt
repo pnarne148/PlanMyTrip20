@@ -3,7 +3,9 @@ package com.example.planmytrip20.api
 import android.util.Log
 import com.example.planmytrip20.classes.ItineraryExport
 import com.example.planmytrip20.classes.database
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 
 class FirebaseHelper() {
 
@@ -11,7 +13,7 @@ class FirebaseHelper() {
 
     fun createNewItinerary(itinerary: ItineraryExport, callback: (String) -> Unit){
         val db = FirebaseFirestore.getInstance()
-        val usersCollection = db.collection("itinerary/pnarne/trips")
+        val usersCollection = db.collection("itinerary/"+FirebaseAuth.getInstance().currentUser?.uid+"/trips")
 
         var documentId: String? = null
         usersCollection.add(itinerary)
@@ -26,7 +28,7 @@ class FirebaseHelper() {
 
     fun updateItinerary(documentId: String, updatedItinerary: ItineraryExport) {
         val db = FirebaseFirestore.getInstance()
-        val itineraryRef = db.collection("itinerary/pnarne/trips").document(documentId)
+        val itineraryRef = db.collection("itinerary/"+FirebaseAuth.getInstance().currentUser?.uid+"/trips").document(documentId)
 
         itineraryRef
             .update(
@@ -43,7 +45,7 @@ class FirebaseHelper() {
     }
 
     fun getEntireItinery(docReference: String){
-        database.db.document("/itinerary/pnarne/trips/"+docReference)
+        database.db.document("/itinerary/"+FirebaseAuth.getInstance().currentUser?.uid+"/trips/"+docReference)
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
@@ -64,7 +66,7 @@ class FirebaseHelper() {
     }
 
     fun getAllItineraries(callback: (List<ItineraryExport>) -> Unit){
-        database.db.collection("/itinerary/pnarne/trips/")
+        database.db.collection("/itinerary/"+FirebaseAuth.getInstance().currentUser?.uid+"/trips/")
             .get()
             .addOnSuccessListener { result ->
                 var trips = emptyList<ItineraryExport>()
