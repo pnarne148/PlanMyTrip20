@@ -25,8 +25,15 @@ import java.util.Collections
 
 class ItineraryViewModel : ViewModel() {
 
-    private val userImages = listOf("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBAHtWe-YxM_NBXquVRo8F5VCpyjC0_LUc4MSEr5PfydzsdUgH-mSQFkHGsV2Mgb75o1S4aLX6Emo&usqp=CAU&ec=48665698",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUiGURvuH253nSLnvvFzNBp8uiA4OqvmKCCUj509afQGQmRCrr_CTTb5ApQM2g3nCfydcUL1bcP1c&usqp=CAU&ec=48665698")
+    private val userImages = listOf("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Ws6ooW4zGa1jK_TImjA6RFyJ7XmBhEWPeIpg5RUi&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBAHtWe-YxM_NBXquVRo8F5VCpyjC0_LUc4MSEr5PfydzsdUgH-mSQFkHGsV2Mgb75o1S4aLX6Emo&usqp=CAU&ec=48665698",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Ws6ooW4zGa1jK_TImjA6RFyJ7XmBhEWPeIpg5RUi&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBAHtWe-YxM_NBXquVRo8F5VCpyjC0_LUc4MSEr5PfydzsdUgH-mSQFkHGsV2Mgb75o1S4aLX6Emo&usqp=CAU&ec=48665698",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Ws6ooW4zGa1jK_TImjA6RFyJ7XmBhEWPeIpg5RUi&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBAHtWe-YxM_NBXquVRo8F5VCpyjC0_LUc4MSEr5PfydzsdUgH-mSQFkHGsV2Mgb75o1S4aLX6Emo&usqp=CAU&ec=48665698",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Ws6ooW4zGa1jK_TImjA6RFyJ7XmBhEWPeIpg5RUi&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBAHtWe-YxM_NBXquVRo8F5VCpyjC0_LUc4MSEr5PfydzsdUgH-mSQFkHGsV2Mgb75o1S4aLX6Emo&usqp=CAU&ec=48665698"
+    )
 
     private val _nextLocationIndex = MutableLiveData<Int>().apply {
         value = 2

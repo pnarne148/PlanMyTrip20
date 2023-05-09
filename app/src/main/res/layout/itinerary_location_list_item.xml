@@ -103,6 +103,7 @@
                     android:layout_gravity="top"
                     android:paddingBottom="4dp"
                     android:maxLines="3"
+                    android:justificationMode="inter_word"
                     android:text="Location Description" />
 
                     <FrameLayout
