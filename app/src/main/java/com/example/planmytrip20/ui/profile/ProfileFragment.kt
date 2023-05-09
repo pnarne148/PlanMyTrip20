@@ -167,7 +167,7 @@ class ProfileFragment : Fragment() {
             pictureDialog.show()
         }
 
-        return root
+        return binding.root
     }
 
     override fun onDestroyView() {
