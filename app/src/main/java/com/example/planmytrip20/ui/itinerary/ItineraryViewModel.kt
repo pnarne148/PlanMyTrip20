@@ -7,10 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.planmytrip20.R
 import com.example.planmytrip20.WebScrape.WikipediaApi
+import com.example.planmytrip20.api.FirebaseHelper
 import com.example.planmytrip20.api.MapApiService
-import com.example.planmytrip20.classes.GMapApiResponseData
-import com.example.planmytrip20.classes.RecommendedLocations
-import com.example.planmytrip20.classes.SelectedLocation
+import com.example.planmytrip20.classes.*
 import com.google.android.gms.maps.model.LatLng
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
@@ -29,9 +28,19 @@ class ItineraryViewModel : ViewModel() {
         value = 2
     }
 
+    private val _latestIndex = MutableLiveData<Int>().apply {
+        value = 0
+    }
+    val latestIndex : LiveData<Int> = _latestIndex
+
     private val _prevLocationIndex = MutableLiveData<Int>().apply {
         value = 1
     }
+
+    private val _docReference = MutableLiveData<String>().apply {
+        value = ""
+    }
+    val docReference: LiveData<String> = _docReference
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is itinerary Fragment"
@@ -45,20 +54,27 @@ class ItineraryViewModel : ViewModel() {
     }
     val notes: LiveData<String> = _notes
 
-    private val _destination = MutableLiveData<SelectedLocation>().apply {
-        value = SelectedLocation("",null, emptyList(), emptyList())
+    private val _destination = MutableLiveData<ItineraryLocation>().apply {
+        value = null
     }
-    val destination: LiveData<SelectedLocation> = _destination
+    val destination: LiveData<ItineraryLocation> = _destination
 
-    private val _recommendedPlaces = MutableLiveData<List<RecommendedLocations>>()
-    val recommendedPlaces: LiveData<List<RecommendedLocations>> = _recommendedPlaces
+    private val _recommendedPlaces = MutableLiveData<List<ItineraryLocation>>()
+    val recommendedPlaces: LiveData<List<ItineraryLocation>> = _recommendedPlaces
 
-    private val _chosenPlaces = MutableLiveData<List<RecommendedLocations>>()
-    val chosenPlaces: LiveData<List<RecommendedLocations>> = _chosenPlaces
+    private val _chosenPlaces = MutableLiveData<List<ItineraryLocation>>()
+    val chosenPlaces: LiveData<List<ItineraryLocation>> = _chosenPlaces
+
+    var nearbyPlaces: List<com.example.planmytrip20.classes.Result> = emptyList()
 
     fun setText(str:String)
     {
         _text.value = str
+    }
+
+    fun setIndex(i:Int)
+    {
+        _latestIndex.value = i
     }
 
     fun setNextLocationIndex(value:Int)
@@ -75,9 +91,12 @@ class ItineraryViewModel : ViewModel() {
         _notes.value = str
     }
 
-    fun setDestination(loc : SelectedLocation?)
+    fun setDestination(loc : ItineraryLocation?)
     {
         _destination.value = loc
+        if (loc != null) {
+            fetchNearByPlaces(loc)
+        }
     }
 
     fun getNearbyPlaces()
@@ -85,8 +104,8 @@ class ItineraryViewModel : ViewModel() {
         _destination.value?.let { fetchNearByPlaces(it) }
     }
 
-    private fun fetchNearByPlaces(selectedLocation: SelectedLocation) {
-        val selLocCoordinates = selectedLocation.latLng
+    fun fetchNearByPlaces(selectedLocation: ItineraryLocation) {
+        val selLocCoordinates = selectedLocation.getLatLng()
         val urlString = "https://maps.googleapis.com/"
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
@@ -109,10 +128,9 @@ class ItineraryViewModel : ViewModel() {
                 response: Response<GMapApiResponseData?>
             ) {
                 val responseBody = response.body()!!
-                selectedLocation.nearByPlaces = responseBody.results
+                nearbyPlaces = responseBody.results
                 Log.d("itinerery", "onCreateView: "+response.body())
-                selectedLocation.selection = List(responseBody.results.size) { false }
-                initializeLists(selectedLocation)
+                initializeLists(nearbyPlaces)
             }
             override fun onFailure(call: Call<GMapApiResponseData?>, t: Throwable) {
                 TODO("Not yet implemented")
@@ -120,18 +138,12 @@ class ItineraryViewModel : ViewModel() {
         })
     }
 
-    fun setDestination(place: String?, location: LatLng?) {
-        val selLocation = SelectedLocation(place,location, emptyList(), emptyList())
-        setDestination(selLocation)
-        fetchNearByPlaces(selLocation)
-        Log.d("itinerery", "onCreateView: "+selLocation.nearByPlaces.size)
-    }
 
-    fun initializeLists(selLocation: SelectedLocation) {
-        Log.d("itinerery", "onCreateView:===== ${selLocation.nearByPlaces.size}")
+    fun initializeLists(nearbyPlaces: List<com.example.planmytrip20.classes.Result>) {
+        Log.d("itinerery", "onCreateView:===== ${nearbyPlaces.size}")
 
         viewModelScope.launch {
-            val recommendedLocations = selLocation.nearByPlaces.mapNotNull { result ->
+            val recommendedLocations = nearbyPlaces.mapIndexedNotNull { index, result ->
                 val lat = result.geometry?.location?.lat
                 val lng = result.geometry?.location?.lng
                 if (lat != null && lng != null) {
@@ -149,7 +161,8 @@ class ItineraryViewModel : ViewModel() {
 
                     Log.d("itinerery", "initializeLists: "+imageURL)
                     RecommendedLocations(result.name, LatLng(lat, lng), imageURL, bitmap, desc)
-
+                    ItineraryLocation(index.toString(), result.place_id, result.name, result.name, result.opening_hours, lat, lng,
+                        false, desc, imageURL, result.rating, WikipediaApi.getURL(result.name), null, bitmap)
                 } else {
                     null
                 }
@@ -162,14 +175,12 @@ class ItineraryViewModel : ViewModel() {
     }
 
 
-    fun choosePlace(recommendedLocation: RecommendedLocations) {
+    fun choosePlace(recommendedLocation: ItineraryLocation) {
         val recommendedList = _recommendedPlaces.value.orEmpty().toMutableList()
         val chosenList = _chosenPlaces.value.orEmpty().toMutableList()
 
-        // Find the index of the recommendedLocation in the recommendedPlaces list
-        val index = recommendedList.indexOfFirst { it.name == recommendedLocation.name && it.latLng == recommendedLocation.latLng }
+        val index = recommendedList.indexOfFirst { it.name == recommendedLocation.name && it.getLatLng() == recommendedLocation.getLatLng() }
 
-        // Remove the recommendedLocation from the recommendedPlaces list
         if (index != -1) {
             recommendedList.removeAt(index)
         }
@@ -181,9 +192,11 @@ class ItineraryViewModel : ViewModel() {
 
         _recommendedPlaces.value = recommendedList
         _chosenPlaces.value = chosenList
+
+        updateFirebaseDB()
     }
 
-    fun unchoosePlace(place: RecommendedLocations) {
+    fun unchoosePlace(place: ItineraryLocation) {
         val updatedChosenPlaces = chosenPlaces.value.orEmpty().toMutableList()
         val updatedRecommendedPlaces = recommendedPlaces.value.orEmpty().toMutableList()
 
@@ -204,6 +217,7 @@ class ItineraryViewModel : ViewModel() {
 
         _chosenPlaces.value = updatedChosenPlaces
         _recommendedPlaces.value = updatedRecommendedPlaces
+        updateFirebaseDB()
     }
 
     fun swapChosenPlaces(pos1: Int, pos2: Int) {
@@ -213,46 +227,70 @@ class ItineraryViewModel : ViewModel() {
         }
         Collections.swap(placesList, pos1, pos2)
         _chosenPlaces.value = placesList
+        updateFirebaseDB()
     }
 
-    fun addPlace(selLocation: SelectedLocation){
+    fun addPlace(selLocation: ItineraryLocation){
         viewModelScope.launch {
-            val lat = selLocation.latLng?.latitude
-            val lng = selLocation.latLng?.longitude
+            val lat = selLocation.latitude
+            val lng = selLocation.longitude
             Log.d("itinerery", "onPlaceSelected: "+lat)
             Log.d("itinerery", "onPlaceSelected: "+lng)
 
-            if (lat != null && lng != null) {
-                val imageURL = withContext(Dispatchers.IO) {
-                    selLocation.address?.let { WikipediaApi.getImageUrlFromWikipedia(it) }
-                }
 
-                val desc = withContext(Dispatchers.IO) {
-                    selLocation.address?.let { WikipediaApi.getFirstParagraphFromWikipedia(it) }
-                }
-
-                val bitmap = withContext(Dispatchers.IO) {
-                    Picasso.get().load(imageURL).resize(100, 100).get()
-                }
-
-                Log.d("itinerery", "initializeLists: "+imageURL)
-                val reccLocation = selLocation.address?.let { RecommendedLocations(it, LatLng(lat, lng), imageURL, bitmap, desc) }
-
-                Log.d("itinerery", "onPlaceSelected: "+_chosenPlaces.value?.size)
-
-                val currentList = _chosenPlaces.value?.toMutableList() ?: mutableListOf()
-                if (reccLocation != null) {
-                    currentList.add(reccLocation)
-                }
-                _chosenPlaces.value = currentList
-                Log.d("itinerery", "onPlaceSelected: "+_chosenPlaces.value?.size)
-
-
-            } else {
-                null
+            val imageURL = withContext(Dispatchers.IO) {
+                selLocation.name?.let { WikipediaApi.getImageUrlFromWikipedia(it) }
             }
 
+            selLocation.description = withContext(Dispatchers.IO) {
+                selLocation.name?.let { WikipediaApi.getFirstParagraphFromWikipedia(it) }
+            }
+
+            selLocation.bitmap = withContext(Dispatchers.IO) {
+                Picasso.get().load(imageURL).resize(100, 100).get()
+            }
+
+            selLocation.wikiUrl = selLocation.name?.let { WikipediaApi.getURL(it) }
+
+
+            val currentList = _chosenPlaces.value?.toMutableList() ?: mutableListOf()
+            if (selLocation != null) {
+                currentList.add(selLocation)
+            }
+            _chosenPlaces.value = currentList
+            Log.d("itinerery", "onPlaceSelected: "+_chosenPlaces.value?.size)
+
+
+            updateFirebaseDB()
         }
+    }
+
+    fun updateFirebaseDB(){
+        val newDestination = destination.value?.copy(bitmap = null)
+        val newAttractions = chosenPlaces.value.orEmpty().map { it.copy(bitmap = null) }
+        val newRecommendations = recommendedPlaces.value.orEmpty().map { it.copy(bitmap = null) }
+
+        val newItinerary = ItineraryExport(newDestination, newAttractions, newRecommendations)
+
+        if(docReference.value.equals(""))
+            FirebaseHelper().createNewItinerary(newItinerary){
+                _docReference.value = it
+                Log.d("Firebase", "updateFirebaseDB0: "+it)
+            }
+        else
+            FirebaseHelper().updateItinerary(docReference.value.toString(),newItinerary)
+        Log.d("firebase", "updateFirebaseDB1: "+docReference.value)
+        Log.d("firebase", "updateFirebaseDB2: "+_docReference.value)
+
+//        Log.d("Firebase", "updateFirebaseDB: "+ (task.result.id))
+//        _docReference.value = task.result.id
+    }
+
+    fun visitPlace(position: Int, checked: Boolean) {
+        val updatedChosenPlaces = chosenPlaces.value.orEmpty().toMutableList()
+        updatedChosenPlaces[position].visited = checked
+        _chosenPlaces.value = updatedChosenPlaces
+
     }
 
 }

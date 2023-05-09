@@ -36,6 +36,11 @@ class WikipediaApi {
             return null
         }
 
+        fun getURL(place: String): String {
+            val url = BASE_URL + place.replace(" ", "%20")
+            return url
+        }
+
 
         fun getFirstParagraphFromWikipedia(place: String): String? {
             val client = OkHttpClient()

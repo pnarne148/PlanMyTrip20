@@ -1,8 +1,6 @@
 package com.example.planmytrip20.ui.itinerary.tripDetails
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,20 +12,18 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.example.planmytrip20.MainActivity
-import com.example.planmytrip20.R
 import com.example.planmytrip20.classes.ItineraryLocation
 import com.example.planmytrip20.databinding.ItineraryLocationListItemBinding
-import com.example.planmytrip20.ui.common.WebViewFragment
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
-import com.example.planmytrip20.ui.itinerary.maps.MapBottomSheetFragment
 import com.google.android.material.card.MaterialCardView
-import kotlinx.coroutines.NonDisposableHandle.parent
 
-class ChecklistRecyclerViewAdapter(private val viewModel: ItineraryViewModel, private val locations: List<ItineraryLocation>):
+class ChecklistRecyclerViewAdapter(
+    private val context: Context,
+    private val viewModel: ItineraryViewModel,
+    private val locations: List<ItineraryLocation>,
+    private val lastVisited: Int
+):
     RecyclerView.Adapter<ChecklistRecyclerViewAdapter.ModelViewHolder>()  {
-
-    private lateinit var context: Context
 
     var openMap : ((ItineraryLocation, ItineraryLocation, String) -> Unit)? = null
 
@@ -39,13 +35,9 @@ class ChecklistRecyclerViewAdapter(private val viewModel: ItineraryViewModel, pr
         parent: ViewGroup,
         viewType: Int,
     ): ChecklistRecyclerViewAdapter.ModelViewHolder {
-        context = parent.context
-
-        return ModelViewHolder(
-            ItineraryLocationListItemBinding.inflate(LayoutInflater.from(context), parent,
-                false
-            )
-        )
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItineraryLocationListItemBinding.inflate(inflater, parent, false)
+        return ModelViewHolder(binding)
     }
 
 
@@ -55,102 +47,39 @@ class ChecklistRecyclerViewAdapter(private val viewModel: ItineraryViewModel, pr
     ) {
         holder.locationName.text = locations[position].name
         holder.locationDesc.text = locations[position].description
-        holder.ratingBar.numStars = locations[position].rating
+        holder.ratingBar.numStars = locations[position].rating?.toInt() ?: 3
 
         Log.d("Location${position}", "${locations[position]}")
 
         holder.checkBox.isChecked = locations[position].visited
 
-        if(locations[position].visited && locations[position]?.user_photo_urls != null && locations[position]?.user_photo_urls?.isNotEmpty()!!) {
-            holder.locationDescLayoutView.removeView(holder.photoListView)
-            holder.userOptionsView.removeView(holder.addPhotosLabelView)
-            holder.userOptionsView.addView(holder.addPhotosLabelView)
-            holder.locationDescLayoutView.addView(holder.photoListView)
-        } else if(locations[position].visited && (locations[position]?.user_photo_urls == null || locations[position]?.user_photo_urls != null && !(locations[position].user_photo_urls?.isNotEmpty()!!))) {
-            holder.locationDescLayoutView.removeView(holder.photoListView)
-            holder.userOptionsView.removeView(holder.addPhotosLabelView)
-            holder.userOptionsView.addView(holder.addPhotosLabelView)
+        if(position.equals(lastVisited))
+        {
+            Log.d(TAG, "onBindViewHolder: lastvisited"+lastVisited)
+            Log.d(TAG, "onBindViewHolder: lastvisited"+position)
+            holder.placeElementsLayout.visibility = View.VISIBLE
+            holder.checkBox.isEnabled = true
+        } else if(position < lastVisited){
+            holder.completedView.visibility = View.VISIBLE
         } else{
-            holder.locationDescLayoutView.removeView(holder.photoListView)
-            holder.userOptionsView.removeView(holder.addPhotosLabelView)
+
         }
 
-        if(locations[position].visited && position+1 < locations.size && locations[position+1].visited){
-            holder.itineraryLayout.removeView(holder.placeElementsLayout)
-            holder.itineraryLayout.removeView(holder.completedView)
-            holder.itineraryLayout.addView(holder.completedView)
-            holder.statusText.text = "Completed"
-            holder.statusText.setTextColor(context.resources.getColor(R.color.green))
-            holder.statusBar.setBackgroundColor(context.resources.getColor(R.color.green))
-            holder.lineView.setBackgroundColor(context.resources.getColor(R.color.green))
-            holder.verticalLineView.setBackgroundColor(context.resources.getColor(R.color.green))
-
-            holder.checkBox.isEnabled = false
-        }
-
-        else if(locations[position].visited && position+1 < locations.size && !locations[position+1].visited){
-            holder.itineraryLayout.removeView(holder.completedView)
-            holder.itineraryLayout.removeView(holder.placeElementsLayout)
-            holder.itineraryLayout.addView(holder.placeElementsLayout)
-            holder.lineView.setBackgroundColor(context.resources.getColor(R.color.yellow))
-
+        if(position == lastVisited-1)
             holder.checkBox.isEnabled = true
-        }
-
-        else if(!locations[position].visited && position+1 < locations.size && !locations[position+1].visited){
-            holder.itineraryLayout.removeView(holder.placeElementsLayout)
-            holder.itineraryLayout.removeView(holder.completedView)
-            holder.itineraryLayout.addView(holder.completedView)
-            holder.statusText.text = "Not Yet Started"
-            holder.statusText.setTextColor(Color.RED)
-            holder.statusBar.setBackgroundColor(context.resources.getColor(R.color.lightgray))
-            holder.lineView.setBackgroundColor(context.resources.getColor(R.color.lightgray))
-            holder.verticalLineView.setBackgroundColor(context.resources.getColor(R.color.lightgray))
-        }
-        if(position == 0 && !locations[position].visited){
-            holder.checkBox.isEnabled = true
-        }else if(position-1 > 0 && !locations[position-1].visited && !locations[position].visited && position+1 < locations.size && !locations[position+1].visited){
-            holder.checkBox.isEnabled = false
-        } else if(position-1 > 0 && locations[position-1].visited && !locations[position].visited && position+1 < locations.size && !locations[position+1].visited){
-            holder.checkBox.isEnabled = true
-        } else if(position == locations.size - 1 && !locations[position].visited && position-1 > 0 && locations[position-1].visited){
-            holder.checkBox.isEnabled = true
-        }
-
-        if(position == locations.size - 1 && locations[position].visited) {
-            holder.placeElementsLayout.removeAllViews()
-            holder.completedView.removeAllViews()
-            holder.statusBar.setBackgroundColor(context.resources.getColor(R.color.green))
-        }
-
-        if(position == locations.size - 1 && !locations[position].visited) {
-            holder.placeElementsLayout.removeAllViews()
-            holder.completedView.removeAllViews()
-            holder.statusBar.setBackgroundColor(context.resources.getColor(R.color.lightgray))
-        }
-
-        Log.d("position", "$position")
-        Log.d("Locations Size", "${locations.size - 1}")
-        Log.d("Condition Check", "${position == locations.size - 1}")
-        if(position != locations.size - 1){
-            holder.carDirection.setOnClickListener{
-                openMap?.invoke(locations[position], locations[position + 1], "DRIVING")
-            }
-            holder.bikeDirection.setOnClickListener{
-                openMap?.invoke(locations[position], locations[position + 1], "BICYCLE")
-            }
-
-            holder.restaurantView.setOnClickListener{
-                openMap?.invoke(locations[position], locations[position + 1], "restaurant")
-            }
-            holder.gasStationView.setOnClickListener{
-                openMap?.invoke(locations[position], locations[position + 1], "gas_station")
-            }
-        }
 
         holder.checkBox.setOnCheckedChangeListener { button, checked ->
             Log.d("Adapter", "This is a OnCheckedChangeListener")
-            onCheckBoxChange?.invoke(position, checked)
+            if(checked)
+            {
+                viewModel.setIndex(lastVisited+1)
+                viewModel.visitPlace(position,checked)
+            }
+            else
+            {
+                viewModel.visitPlace(position,checked)
+                viewModel.setIndex(lastVisited-1)
+            }
         }
 
         holder.addPhotosLabelView.setOnClickListener{

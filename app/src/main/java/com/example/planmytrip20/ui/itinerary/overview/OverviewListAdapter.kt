@@ -3,12 +3,10 @@ package com.example.planmytrip20.ui.itinerary.overview
 import android.content.Context
 import android.graphics.Color
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
@@ -18,22 +16,20 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.planmytrip20.R
-import com.example.planmytrip20.classes.Location
+import com.example.planmytrip20.classes.ItineraryLocation
+import com.example.planmytrip20.classes.OpeningHours
 import com.example.planmytrip20.classes.SelectedLocation
+import com.example.planmytrip20.databinding.CardFlightItemBinding
 import com.example.planmytrip20.databinding.CardNotesItemBinding
 import com.example.planmytrip20.databinding.CardPlacesItemBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
-import com.example.planmytrip20.ui.itinerary.helpers.ItemTouchHelperCallback
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.model.RectangularBounds
-import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import java.util.*
 
 
 class OverviewListAdapter(
@@ -48,6 +44,7 @@ class OverviewListAdapter(
     companion object {
         const val VIEW_TYPE_NOTES = 1
         const val VIEW_TYPE_PLACES = 2
+        const val VIEW_TYPE_FLIGHTS =3
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -60,7 +57,12 @@ class OverviewListAdapter(
                 val binding = CardPlacesItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 ViewHolderPlaces(binding)
             }
+            VIEW_TYPE_FLIGHTS -> {
+                val binding = CardFlightItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ViewHolderFlights(binding)
+            }
             else -> throw IllegalArgumentException("Invalid view type")
+
         }
     }
 
@@ -75,6 +77,10 @@ class OverviewListAdapter(
                 val viewHolderPlaces = holder as ViewHolderPlaces
                 viewHolderPlaces.bind(item)
             }
+            VIEW_TYPE_FLIGHTS -> {
+                val viewHolderFlights = holder as ViewHolderFlights
+                viewHolderFlights.bind(item)
+            }
         }
     }
 
@@ -84,6 +90,7 @@ class OverviewListAdapter(
         return when (position) {
             0 -> VIEW_TYPE_NOTES
             1 -> VIEW_TYPE_PLACES
+            3 -> VIEW_TYPE_FLIGHTS
             else -> VIEW_TYPE_NOTES
         }
     }
@@ -121,6 +128,26 @@ class OverviewListAdapter(
         }
     }
 
+    inner class ViewHolderFlights(private val binding: CardFlightItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: String) {
+            binding.cardType.text = item
+
+            binding.addFlight.setOnClickListener{
+                //todo: Bottom sheet to fetch flight details
+            }
+
+            binding.dropDown.setOnClickListener {
+
+                if (binding.dropDown.drawable?.constantState?.equals(ContextCompat.getDrawable(context, R.drawable.ic_right_arrow)?.constantState) == true)
+                {
+                }
+                else
+                {
+                }
+            }
+        }
+    }
+
     inner class ViewHolderPlaces(private val binding: CardPlacesItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: String) {
             binding.cardType.text = item
@@ -133,7 +160,6 @@ class OverviewListAdapter(
             )
 
             handleAutoCompleteFrag()
-
 
             with(binding.selectedPlaces) {
                 layoutManager = LinearLayoutManager(context)
@@ -208,26 +234,28 @@ class OverviewListAdapter(
 
             viewModel.destination.observe(viewLifecycleOwner, Observer {
                 val bounds = LatLngBounds(
-                    LatLng(it.latLng?.latitude?.minus(10) ?: 37.7749, it.latLng?.longitude?.minus(10) ?: -122.4194),
-                    LatLng(it.latLng?.latitude?.minus(10) ?: 37.7749, it.latLng?.longitude?.minus(10) ?: -122.4194),
+                    LatLng(it.latitude?.minus(10) ?: 37.7749, it.longitude?.minus(10) ?: -122.4194),
+                    LatLng(it.latitude?.minus(10) ?: 37.7749, it.longitude?.minus(10) ?: -122.4194),
                 )
 
                 val autocompleteFrag = AutocompleteSupportFragment()
-                autocompleteFrag.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
+                autocompleteFrag.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.OPENING_HOURS, Place.Field.RATING))
+
                 val locationRestriction = RectangularBounds.newInstance(bounds)
 
-                //code to bound location search
+//                code to bound location search
 //                autocompleteFrag.setLocationRestriction(locationRestriction)
 
-
                 val transaction = fragmentManager.beginTransaction()
-                transaction.replace(R.id.addLocationFragment, autocompleteFrag)
+                transaction.replace((R.id.addLocationFragment), autocompleteFrag)
                 transaction.commit()
 
                 autocompleteFrag.setOnPlaceSelectedListener(object : PlaceSelectionListener {
                     override fun onPlaceSelected(place: Place) {
                         Log.d("itinerery", "onPlaceSelected: "+place.latLng)
-                        viewModel.addPlace(SelectedLocation(place.name, place.latLng, emptyList(), emptyList()))
+                        viewModel.addPlace(
+                            ItineraryLocation(0.toString(), place.id, place.name, place.address, OpeningHours(true),  place.latLng?.latitude!!, place.latLng?.longitude!!,false, "", "", place.rating, "", null, null)
+                        )
                     }
 
                     override fun onError(status: Status) {

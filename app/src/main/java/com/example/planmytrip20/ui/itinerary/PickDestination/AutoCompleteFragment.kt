@@ -35,20 +35,20 @@ class AutoCompleteFragment : Fragment() {
         autocompleteFragment.setPlaceFields(listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG))
         autocompleteFragment.setTypeFilter(TypeFilter.CITIES)
 
-        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                var selectedLocation =
-                    place.name?.let { place.latLng?.let { it1 ->
-                        SelectedLocation(it,
-                            it1, emptyList(), emptyList())
-                    } }
-                itinereryViewModel.setDestination(selectedLocation)
-            }
-
-            override fun onError(status: Status) {
-                // Handle error
-            }
-        })
+//        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+//            override fun onPlaceSelected(place: Place) {
+//                var selectedLocation =
+//                    place.name?.let { place.latLng?.let { it1 ->
+//                        SelectedLocation(it,
+//                            it1, emptyList(), emptyList())
+//                    } }
+//                itinereryViewModel.setDestination(selectedLocation)
+//            }
+//
+//            override fun onError(status: Status) {
+//                // Handle error
+//            }
+//        })
 
 
         return view

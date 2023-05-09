@@ -76,8 +76,8 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         binding.bottomSheetHeader.text = "Directions & Places - Map view"
-        binding.source.text = "Source: ${source.latLng.latitude}, ${source.latLng.longitude}"
-        binding.destination.text = "Destination: ${destination.latLng.latitude}, ${destination.latLng.longitude}"
+        binding.source.text = "Source: ${source.getLatLng().latitude}, ${source.getLatLng().longitude}"
+        binding.destination.text = "Destination: ${destination.getLatLng().latitude}, ${destination.getLatLng().longitude}"
 
         return binding.root
     }
@@ -91,18 +91,18 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
         mMap.clear()
         mMap.addMarker(
             MarkerOptions()
-                .position(source.latLng)
+                .position(source.getLatLng())
                 .title(source.name).icon(
                     BitmapDescriptorFactory.defaultMarker(
                         BitmapDescriptorFactory.HUE_GREEN)))
         mMap.addMarker(
             MarkerOptions()
-                .position(destination.latLng)
+                .position(destination.getLatLng())
                 .title(destination.name).icon(
                 BitmapDescriptorFactory.defaultMarker(
                     BitmapDescriptorFactory.HUE_RED)))
         val cameraPosition = CameraPosition.Builder()
-            .target(source.latLng)
+            .target(source.getLatLng())
             .zoom(8f)
             .build()
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
@@ -162,8 +162,8 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
 
         val retrofitData = retrofitBuilder.getDirections(
             "AIzaSyD0IAwuCADIsl-MFp1yhhGWBXxgjlUjbFw",
-            "${source.latLng.latitude},${source.latLng.longitude}",
-            "${destination.latLng.latitude},${destination.latLng.longitude}",drivingMode)
+            "${source.latitude},${source.longitude}",
+            "${destination.latitude},${destination.longitude}",drivingMode)
 //            "Montreal","DRIVING")
 
         retrofitData.enqueue(object : Callback<GDirectionsAPIResponse?> {
@@ -194,7 +194,7 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
 
         val retrofitData = retrofitBuilder.getNearByPlaces(
             "AIzaSyD0IAwuCADIsl-MFp1yhhGWBXxgjlUjbFw",
-            "${source.latLng.latitude},${source.latLng.longitude}",
+            "${source.latitude},${source.longitude}",
             mapType, 150000)
 
         retrofitData.enqueue(object : Callback<GMapApiResponseData?> {
