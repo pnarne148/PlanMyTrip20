@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.planmytrip20.databinding.FragmentProfileBinding
+import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
 
 class ProfileFragment : Fragment() {
 
@@ -25,14 +26,14 @@ class ProfileFragment : Fragment() {
         val profileViewModel =
             ViewModelProvider(this).get(ProfileViewModel::class.java)
 
-        _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        val itineraryViewModel =
+            ViewModelProvider(this).get(ItineraryViewModel::class.java)
 
-        val textView: TextView = binding.textNotifications
-        profileViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-        return root
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+
+
+
+        return  binding.root
     }
 
     override fun onDestroyView() {
