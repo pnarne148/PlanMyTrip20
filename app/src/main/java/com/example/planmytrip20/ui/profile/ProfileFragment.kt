@@ -29,6 +29,7 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.example.planmytrip.auth.LoginActivity
 import com.example.planmytrip20.R
+import com.example.planmytrip20.classes.database
 import com.example.planmytrip20.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -61,52 +62,11 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
-
         val profileViewModel =
             ViewModelProvider(this).get(ProfileViewModel::class.java)
-        cameraCheckPermission()
- //       galleryCheckPermission()
-        val user = FirebaseAuth.getInstance().currentUser
-        if (user != null) {
-            val name = user.displayName
-            val email = user.email
-            val photoUrl = user.photoUrl
-            if (photoUrl!=null)
-            {
-                displayImageUrl(photoUrl.toString())
-            }
-            // You can now use the name, email, and photoUrl variables as needed
-        }
-
-
-        cameraLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == RESULT_OK) {
-                    result.data?.let { data ->
-                        val bitmap = data.extras?.get("data") as Bitmap
-                        val uri = bitmap.toUri(requireContext())
-                        uploadImageToFirebaseStorage(uri)
-                        //we are using coroutine image loader (coil)
-                    }
-                }
-            }
-
-        galleryLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == RESULT_OK) {
-                    result.data?.let { data ->
-                        data.data?.let { uri ->
-                            uploadImageToFirebaseStorage(uri)
-                        }
-                    }
-                }
-            }
-
-
+        populateUI()
 
         binding.signout.setOnClickListener {
             // Firebase sign out
@@ -126,10 +86,17 @@ class ProfileFragment : Fragment() {
 
         binding.settings.setOnClickListener {
 
+
             val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
 
             // Create a new instance of EditProfileFragment
             val editProfileFragment = EditProfileFragment()
+            editProfileFragment.setOnProfileUpdatedListener(object : EditProfileFragment.OnProfileUpdatedListener {
+                override fun onProfileUpdated() {
+                    populateUI()
+                    // Reload ProfileFragment data here
+                }
+            })
 
             transaction.replace(R.id.nav_host_fragment_activity_main, editProfileFragment)
             transaction.addToBackStack(null)
@@ -140,31 +107,13 @@ class ProfileFragment : Fragment() {
 
 
 
-
         //when you click on the image
-        binding.profilePhoto.setOnClickListener {
-            val pictureDialog = AlertDialog.Builder(requireContext())
-            pictureDialog.setTitle("Select Action")
-            val pictureDialogItem = arrayOf(
-                "Select photo from Gallery",
-                "Capture photo from Camera"
-            )
-            pictureDialog.setItems(pictureDialogItem) { dialog, which ->
-                when (which) {
-                    0 -> galleryLauncher.launch(
-                        Intent(
-                            Intent.ACTION_PICK,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                        )
-                    )
-                    1 -> cameraLauncher.launch(Intent(MediaStore.ACTION_IMAGE_CAPTURE))
-                }
-            }
-            pictureDialog.show()
-        }
+
 
         return root
     }
+
+
 
     override fun onDestroyView() {
 
@@ -172,130 +121,58 @@ class ProfileFragment : Fragment() {
         _binding = null
     }
 
-    private fun cameraCheckPermission() {
+    override fun onResume() {
+        populateUI()
+        super.onResume()
+    }
 
-        Dexter.withContext(requireContext())
-            .withPermissions(
-                android.Manifest.permission.READ_EXTERNAL_STORAGE,
-                android.Manifest.permission.CAMERA
-            ).withListener(object :
-                MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    report?.let {
-                        if (report.areAllPermissionsGranted()) {
-                            camera()
+
+    private fun populateUI() {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            val name = user.displayName
+            val email = user.email
+            val photoUrl = user.photoUrl
+            if (photoUrl != null) {
+                displayImageUrl(photoUrl.toString())
+            }
+            val userid = user.uid
+            // fetching user details from db
+            database.db.collection("userDetails")
+                .whereEqualTo("uid", userid)
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        if (document != null) {
+                            val userName = document.getString("userName")
+                            if (!userName.isNullOrEmpty()) {
+                                binding.tvName.text = userName
+                            }
+
+                            val phoneNumber = document.getString("phoneNumber")
+                            if (!phoneNumber.isNullOrEmpty()) {
+                                binding.phoneNumber.text = phoneNumber
+                            }
+
+                            val email = document.getString("email")
+                            if (!email.isNullOrEmpty()) {
+                                binding.email.text = email
+                            }
+
+                            val emergencyContact = document.getString("emergencyContact")
+                            if (!emergencyContact.isNullOrEmpty()) {
+                                binding.sosPhoneNumber.text = emergencyContact
+                            }
+
                         }
                     }
                 }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    p0: MutableList<com.karumi.dexter.listener.PermissionRequest>?,
-                    p1: PermissionToken?
-                ) {
-                    showRotationalDialogForPermission()
+                .addOnFailureListener { exception ->
+                    Log.w(TAG, "Error getting userDetails.", exception)
                 }
-
-            }
-            ).onSameThread().check()
+            // You can now use the name, email, and photoUrl variables as needed
+        }
     }
-
-    private fun camera() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraLauncher.launch(intent)
-    }
-
-    private fun gallery() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        galleryLauncher.launch(intent)
-    }
-
-    private fun galleryCheckPermission() {
-
-        Dexter.withContext(requireContext()).withPermission(
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-        ).withListener(object : PermissionListener {
-            override fun onPermissionGranted(p0: PermissionGrantedResponse?) {
-                gallery()
-            }
-
-            override fun onPermissionDenied(p0: PermissionDeniedResponse?) {
-                Toast.makeText(
-                    requireContext(),
-                    "You have denied the storage permission to select image",
-                    Toast.LENGTH_SHORT
-                ).show()
-                showRotationalDialogForPermission()
-            }
-
-            override fun onPermissionRationaleShouldBeShown(
-                p0: com.karumi.dexter.listener.PermissionRequest?,
-                p1: PermissionToken?
-            ) {
-                showRotationalDialogForPermission()
-            }
-        }).onSameThread().check()
-    }
-
-    private fun showRotationalDialogForPermission() {
-        AlertDialog.Builder(requireContext())
-            .setMessage(
-                "It looks like you have turned off permissions"
-                        + "required for this feature. It can be enable under App settings!!!"
-            )
-
-            .setPositiveButton("Go TO SETTINGS") { _, _ ->
-
-                try {
-                    val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                    val uri = Uri.fromParts("package", requireContext().packageName, null)
-                    intent.data = uri
-                    startActivity(intent)
-
-                } catch (e: ActivityNotFoundException) {
-                    e.printStackTrace()
-                }
-            }
-
-            .setNegativeButton("CANCEL") { dialog, _ ->
-                dialog.dismiss()
-            }.show()
-    }
-
-    private fun uploadImageToFirebaseStorage(uri: Uri) {
-        val fileName = UUID.randomUUID().toString()
-        val imageRef = storageReference.child("images/$fileName")
-
-        imageRef.putFile(uri)
-            .addOnSuccessListener {
-                imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
-                    // Display the image URL
-                    displayImageUrl(downloadUrl.toString())
-
-                    // Set the user photo URL in Firebase Authentication
-                    val user = FirebaseAuth.getInstance().currentUser
-                    if (user != null) {
-                        val profileUpdates = UserProfileChangeRequest.Builder()
-                            .setPhotoUri(downloadUrl)
-                            .build()
-
-                        user.updateProfile(profileUpdates)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    Log.d(TAG, "User photo URL updated.")
-                                } else {
-                                    Log.e(TAG, "Error updating user photo URL.", task.exception)
-                                }
-                            }
-                    }
-                }
-            }
-            .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), "Failed to upload image: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-
     private fun displayImageUrl(url: String) {
         // Display the image URL in a TextView or any other desired way
         binding.profilePhoto.load(url) {
@@ -304,12 +181,6 @@ class ProfileFragment : Fragment() {
             transformations(CircleCropTransformation())
         }
     }
-
-    private fun displayUserDetails(username: String, useremail: String ) {
-        // Display the image URL in a TextView or any other desired way
-        binding.tvName.text = username
-        binding.email.text=useremail
-        }
     }
 
     fun Bitmap.toUri(context: Context): Uri {
