@@ -51,7 +51,6 @@ class HomeFragment : Fragment() {
 
         MobileAds.initialize(requireContext()) {}
 
-        requireActivity().onBackPressedDispatcher.addCallback { onBackPressed() }
 
         return root
     }
@@ -217,13 +216,6 @@ class HomeFragment : Fragment() {
 
         /** Native ad code */
 
-    }
-
-    fun onBackPressed(): Boolean {
-        // Handle the back button press
-        // Return true if the back button press is consumed
-        // Return false if the back button press should be handled by the parent activity
-        return true
     }
 
     override fun onDestroyView() {
