@@ -25,9 +25,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD0IAwuCADIsl-MFp1yhhGWBXxgjlUjbFw" />
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
 
         <activity
             android:name=".ScrollingActivity"
@@ -51,10 +48,6 @@
         <activity
             android:name="com.example.planmytrip.auth.SignUpActivity"
             android:exported="false" />
-        <activity
-            android:name=".ui.profile.UserQuiz.UserPreferencesActivity"
-            android:exported="false" />
     </application>
-
 
 </manifest>

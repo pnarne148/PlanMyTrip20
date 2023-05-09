@@ -19,7 +19,7 @@ data class ItineraryLocation(
     val location_image_url: String? = null,
     var rating: Double?,
     var wikiUrl: String? = null,
-    var user_photo_urls: List<String>? = emptyList(),
+    var user_photo_urls: List<String>? = null,
     @Exclude var bitmap: Bitmap? = null
 ): Parcelable {
 

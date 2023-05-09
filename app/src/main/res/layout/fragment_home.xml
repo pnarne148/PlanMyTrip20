@@ -1,104 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.home.HomeFragment">
 
-    <!--    <com.google.android.ads.nativetemplates.TemplateView-->
-    <!--        android:id="@+id/native_ad_template"-->
-    <!--        app:gnt_template_type="@layout/gnt_small_template_view"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-
-    <!--        android:layout_alignParentBottom="true" />-->
-
-    <!-- android:layout_above="@id/adView"-->
-
-    <LinearLayout
+    <TextView
+        android:id="@+id/text_home"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="50dp">
-
-        <TextView
-            android:id="@+id/welcomeTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/welcome_background"
-            android:focusable="true"
-            android:fontFamily="sans-serif-light"
-            android:gravity="center_horizontal"
-            android:padding="16dp"
-            android:text="Welcome"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="25dp"
-            android:paddingBottom="25dp"
-            android:paddingLeft="11dp"
-            android:paddingRight="11dp">
-
-            <EditText
-                android:id="@+id/editTextSearchHomepage"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="11dp"
-                android:hint="search your next adventure here"
-                ads:layout_constraintBottom_toBottomOf="parent"
-                ads:layout_constraintEnd_toStartOf="@+id/buttonGoHomepage"
-                ads:layout_constraintStart_toStartOf="parent"
-                ads:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/buttonGoHomepage"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Go"
-                ads:layout_constraintBottom_toBottomOf="parent"
-                ads:layout_constraintEnd_toEndOf="parent"
-                ads:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:id="@+id/recommendedTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="Recommended Places"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewCard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            tools:listitem="@layout/item_list" />
-
-        <Button
-            android:id="@+id/viewAllButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:text="View More" />
-
-    </LinearLayout>
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/banner_ad_unit_id" />
-
-</RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

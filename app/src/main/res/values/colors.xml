@@ -32,7 +32,4 @@
     <color name="yellow">#FFC801</color>
     <color name="textColor">#518A10</color>
     <color name="textColorDark">#345310</color>
-    <color name="button_background">#4CAF50</color>
-    <color name="option_button_text_color">#FFFFFF</color>
-
 </resources>
