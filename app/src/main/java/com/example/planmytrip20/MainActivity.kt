@@ -18,6 +18,7 @@ import com.example.planmytrip20.classes.OpeningHours
 import com.example.planmytrip20.classes.database
 import com.example.planmytrip20.databinding.ActivityMainBinding
 import com.google.android.gms.maps.model.LatLng
+import com.example.planmytrip20.ui.profile.OnBackPressedListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -87,6 +88,15 @@ class MainActivity : AppCompatActivity() {
 //        FirebaseHelper().createNewItinerary(ItineraryExport(loc, listOf(loc), listOf(loc, loc)))
 
 
+    }
+
+    override fun onBackPressed() {
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+        if (currentFragment is OnBackPressedListener && currentFragment.onBackPressed()) {
+            // The back press event has been consumed by the fragment
+            return
+        }
+        super.onBackPressed()
     }
 
     companion object {}

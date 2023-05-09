@@ -1,11 +1,24 @@
 package com.example.planmytrip.auth
 
+import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Button
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.planmytrip20.MainActivity
+import com.example.planmytrip20.R
+import com.example.planmytrip20.classes.database
+
 import com.example.planmytrip20.databinding.ActivityLoginBinding
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.tasks.Task
 
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
@@ -18,6 +31,21 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var firebaseAuth: FirebaseAuth
 
+
+    private lateinit var googleSignInClient : GoogleSignInClient
+
+// ...
+
+
+
+    private fun signInWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
+    }
+
+    companion object {
+        private const val RC_SIGN_IN = 9001
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         FirebaseApp.initializeApp(this)
@@ -32,6 +60,21 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
+
+        firebaseAuth = FirebaseAuth.getInstance()
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("640042428689-sgarsk05r0oage0gtgq83dkftc1hnr9s.apps.googleusercontent.com")
+            .requestEmail()
+            .build()
+
+        googleSignInClient = GoogleSignIn.getClient(this , gso)
+
+//        binding.googleSignIn.setOnClickListener()
+//        {
+//            signInGoogle()
+//        }
+
 
         binding.loginBtn.setOnClickListener {
             val email = binding.emailEt.text.toString()
@@ -52,6 +95,71 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
 
             }
+        }
+
+        var firebaseAuth = FirebaseAuth.getInstance()
+        val email = binding.emailEt.text.toString()
+        binding.forgotBtn.setOnClickListener {
+            if (  email!=null) {
+                firebaseAuth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Password reset email sent successfully
+                            Toast.makeText(this, "Password reset email sent.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // Password reset email failed to send
+                            Toast.makeText(this, "Failed to send password reset email.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            } else {
+                Toast.makeText(this, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun signInGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        launcher.launch(signInIntent)
+    }
+
+
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            result ->
+        if (result.resultCode == Activity.RESULT_OK){
+
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            handleResults(task)
+        }
+    }
+
+    private fun handleResults(task: Task<GoogleSignInAccount>) {
+        if (task.isSuccessful){
+            val account : GoogleSignInAccount? = task.result
+            if (account != null){
+                val username = firebaseAuth.currentUser?.email
+                val uid= firebaseAuth.currentUser?.uid
+                val userDetails = hashMapOf(
+                    "userName" to username,
+                    "uid" to uid
+                )
+                if (uid != null) {
+                    database.db.collection("userDetails").document(uid).set(userDetails)
+                        .addOnSuccessListener {
+                            Log.d(ContentValues.TAG, "Users details successfully updated")
+                            val intent = Intent(this, LoginActivity::class.java)
+                            startActivity(intent)
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.w(ContentValues.TAG, "Error saving user details.", exception)
+                        }
+                }
+
+
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }
+        }else{
+            Toast.makeText(this, task.exception.toString() , Toast.LENGTH_SHORT).show()
         }
     }
 

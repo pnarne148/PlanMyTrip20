@@ -27,6 +27,7 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.example.planmytrip20.MainActivity
 import com.example.planmytrip20.classes.database
+import com.example.planmytrip20.classes.database.db
 
 import com.example.planmytrip20.databinding.FragmentEditProfileBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -43,13 +44,34 @@ import com.karumi.dexter.listener.single.PermissionListener
 import java.io.ByteArrayOutputStream
 import java.util.*
 
-class EditProfileFragment : Fragment() {
+class EditProfileFragment : Fragment(), OnBackPressedListener {
     private var _binding: FragmentEditProfileBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
     private lateinit var galleryLauncher: ActivityResultLauncher<Intent>
     private val storageReference: StorageReference = FirebaseStorage.getInstance().reference
+
+    interface OnProfileUpdatedListener {
+        fun onProfileUpdated()
+    }
+
+    override fun onBackPressed(): Boolean {
+        // Handle the back press event here
+        // Return true if the event is consumed, false otherwise
+        parentFragmentManager.commit {
+            remove(this@EditProfileFragment)
+            onProfileUpdatedListener?.onProfileUpdated()
+        }
+        return true
+    }
+
+
+    private var onProfileUpdatedListener: OnProfileUpdatedListener? = null
+
+    fun setOnProfileUpdatedListener(listener: OnProfileUpdatedListener) {
+        onProfileUpdatedListener = listener
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -82,6 +104,8 @@ class EditProfileFragment : Fragment() {
                             binding.editablePhNo.setText(document.getString("phoneNumber"))
                             binding.editableEmergencyPhNo.setText(document.getString("emergencyContact"))
                             binding.editableAddress.setText(document.getString("address"))
+                            binding.sosOn.isChecked = document.getString("sos").toBoolean()
+                            binding.premiumUser.isChecked = document.getString("isPremiumActive").toBoolean()
                             android.util.Log.w(TAG, "${document.id} => ${document.data}")
                         }
                     }
@@ -90,6 +114,45 @@ class EditProfileFragment : Fragment() {
                     android.util.Log.w(TAG, "Error getting userDetails.", exception)
                 }
 
+        }
+        var sos : String = "false"
+        binding.sosOn.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                sos="true"
+            } else {
+                sos="false"
+                // Switch is off
+                // Update premium status in database or perform some operation
+            }
+            val userid = user?.uid
+            val query = db.collection("userDetails").whereEqualTo("uid",userid).get().addOnSuccessListener { result ->
+                val batch = db.batch()
+                for (document in result)
+                {
+                    batch.update(document.reference,"sos",sos)
+                }
+                batch.commit().addOnSuccessListener { Log.d(TAG,"updated successfully") }.addOnFailureListener { e-> Log.w(TAG,"Error while updatinf documents"+e) }
+            }
+        }
+
+        var premUser : String = "false"
+        binding.premiumUser.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                premUser="true"
+            } else {
+                premUser="false"
+                // Switch is off
+                // Update premium status in database or perform some operation
+            }
+            val userid = user?.uid
+            val query = db.collection("userDetails").whereEqualTo("uid",userid).get().addOnSuccessListener { result ->
+                val batch = db.batch()
+                for (document in result)
+                {
+                    batch.update(document.reference,"isPremiumActive",premUser)
+                }
+                batch.commit().addOnSuccessListener { Log.d(TAG,"updated successfully") }.addOnFailureListener { e-> Log.w(TAG,"Error while updatinf documents"+e) }
+            }
         }
 
 
@@ -164,6 +227,7 @@ class EditProfileFragment : Fragment() {
                     .addOnSuccessListener { Log.d(TAG, "Users details successfully updated")
                         parentFragmentManager.commit {
                             remove(this@EditProfileFragment)
+                            onProfileUpdatedListener?.onProfileUpdated()
                         }
 
                     }
