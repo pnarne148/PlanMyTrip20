@@ -56,7 +56,7 @@ class TripPlanFragment(private val viewModelOwner: ViewModelStoreOwner) : Fragme
                         Log.d(TAG, "Photo Urls Before: ${newLocations[position].user_photo_urls?.size}")
                         newLocations[position].user_photo_urls = newLocations[position].user_photo_urls?.plus(downloadUri.toString())
                         Log.d(TAG, "Photo Urls After: ${newLocations[position].user_photo_urls?.size}")
-//                        adapter.notifyItemChanged(position)
+//                        binding.list.adapter?.notifyItemChanged(position)
                     })
                 }
             }
@@ -82,6 +82,9 @@ class TripPlanFragment(private val viewModelOwner: ViewModelStoreOwner) : Fragme
                 if(newLocations.isNotEmpty()) {
                     itineraryViewModel.latestIndex.observe(viewLifecycleOwner, Observer {
                         adapter = ChecklistRecyclerViewAdapter(context, itineraryViewModel, newLocations, it, ::startGalleryIntent)
+                        binding.list.adapter = adapter
+                        if(it > 1)
+                            scrollToPosition(it-1)
                     })
                 }
             })
@@ -100,7 +103,6 @@ class TripPlanFragment(private val viewModelOwner: ViewModelStoreOwner) : Fragme
                 if (clipData != null) {
                     for (i in 0 until clipData.itemCount) {
                         val imageUri = clipData.getItemAt(i).uri
-                        uploadImageToFirebaseStorage(imageUri)
                     }
                 } else {
                     val imageUri = result.data?.data

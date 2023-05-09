@@ -1,8 +1,10 @@
 package com.example.planmytrip20.ui.itinerary.tripDetails
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -176,6 +178,14 @@ class ChecklistRecyclerViewAdapter(
             holder.hideDesc.visibility = View.GONE
         }
 
+    }
+
+    private fun openGalleryIntent(position: Int){
+        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "image/*"
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        }
+        context.startActivity(galleryIntent)
     }
 
     private fun viewOnMap(loc1: ItineraryLocation, loc2: ItineraryLocation, mapType: String) {
