@@ -6,11 +6,39 @@
     android:layout_height="wrap_content"
     android:id="@+id/itinerary_main_layout">
 
+    <LinearLayout
+        android:id="@+id/start_point"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf ="parent">
+        <TextView
+            android:id="@+id/start_location_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Location"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textStyle="bold"
+            android:layout_gravity="left"
+            android:textColor="@color/green"
+            />
+        <View
+            android:id="@+id/top_verticalLine"
+            android:layout_width="5dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="21dp"
+            android:background="@color/darkgray"/>
+
+    </LinearLayout>
+
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/location_item_card_view"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/start_point"
         app:strokeColor="@color/card_stroke_color"
         app:strokeWidth="1dp"
         tools:viewBindingIgnore="true">
@@ -77,41 +105,55 @@
                     android:maxLines="3"
                     android:text="Location Description" />
 
-
-                <LinearLayout
-                    android:id="@+id/user_images_view"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="left"
-                    android:paddingBottom="2dp"
-                    android:visibility="gone"
-                    android:layout_width="match_parent">
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:maxHeight="50dp"
-                        android:src="@drawable/test_image"/>
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:maxHeight="50dp"
-                        android:src="@drawable/test_image"/>
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:maxHeight="50dp"
-                        android:src="@drawable/test_image"/>
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:maxHeight="50dp"
-                        android:src="@drawable/test_image"/>
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:maxHeight="50dp"
-                        android:src="@drawable/test_image"/>
-                </LinearLayout>
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/user_images_view">
+                        <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:id="@+id/photo_gallery_view"
+                            android:name="com.example.planmytrip20.itinerary.tripDetails.TripPlanFragment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:layoutManager="LinearLayoutManager"
+                            tools:context="com.example.planmytrip20.itinerary.tripDetails.TripPlanFragment"
+                            tools:listitem="@layout/photo_gallery_list_item"
+                            android:orientation="horizontal"/>
+                    </FrameLayout>
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/user_images_view"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:gravity="left"-->
+<!--                    android:paddingBottom="2dp"-->
+<!--                    android:layout_width="match_parent">-->
+<!--                    <ImageView-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:maxHeight="50dp"-->
+<!--                        android:src="@drawable/test_image"/>-->
+<!--                    <ImageView-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:maxHeight="50dp"-->
+<!--                        android:src="@drawable/test_image"/>-->
+<!--                    <ImageView-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:maxHeight="50dp"-->
+<!--                        android:src="@drawable/test_image"/>-->
+<!--                    <ImageView-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:maxHeight="50dp"-->
+<!--                        android:src="@drawable/test_image"/>-->
+<!--                    <ImageView-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:maxHeight="50dp"-->
+<!--                        android:src="@drawable/test_image"/>-->
+<!--                </LinearLayout>-->
                 <LinearLayout
                     android:id="@+id/user_options_view"
                     android:layout_height="wrap_content"

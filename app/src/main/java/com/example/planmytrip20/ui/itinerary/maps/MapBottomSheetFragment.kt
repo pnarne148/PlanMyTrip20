@@ -1,13 +1,17 @@
 package com.example.planmytrip20.ui.itinerary.maps
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.planmytrip20.R
 import com.example.planmytrip20.api.MapApiService
@@ -43,6 +47,7 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
 
     private lateinit var binding: FragmentMapBottomSheetBinding
     private lateinit var mMap: GoogleMap
+    private var isLocationEnabled = false
 
     private lateinit var mapType: String
     private lateinit var source: ItineraryLocation
@@ -89,6 +94,27 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.clear()
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                100
+            )
+        } else {
+            // Enable the location layer on the map
+            mMap.isMyLocationEnabled = true
+        }
+
         mMap.addMarker(
             MarkerOptions()
                 .position(source.getLatLng())
@@ -186,6 +212,8 @@ class MapBottomSheetFragment : BottomSheetDialogFragment(), OnMapReadyCallback {
     }
 
     private fun fetchNearByPlaces() {
+
+
         val urlString =  "https://maps.googleapis.com/"
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())

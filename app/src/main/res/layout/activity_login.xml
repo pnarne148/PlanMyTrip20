@@ -173,8 +173,6 @@
             android:padding="3dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_google_plus"
-            android:colorFilter="#808080"
-        android:colorFilterBlendMode="multiply"
             android:clickable="false"
             android:focusable="false"/>
 
