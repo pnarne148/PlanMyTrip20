@@ -40,9 +40,6 @@
         app:layout_constraintTop_toBottomOf="@+id/itinerary_list_header"
         android:paddingBottom="56dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
-
-
     <RelativeLayout
         android:id="@+id/rellay1"
         android:layout_width="match_parent"
