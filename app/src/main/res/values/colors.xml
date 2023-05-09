@@ -16,6 +16,7 @@
     <color name="lightgray3">#D1D1D3</color>
     <color name="lightgray2">#6B757F</color>
     <color name="done">#3F51B5</color>
+    <color name="darkgray">#474747</color>
     <color name="red">#FF0000</color>
     <!-- colors related to profile page -->
     <color name="gradEnd">#67EFC8</color>
@@ -31,4 +32,7 @@
     <color name="yellow">#FFC801</color>
     <color name="textColor">#518A10</color>
     <color name="textColorDark">#345310</color>
+    <color name="button_background">#4CAF50</color>
+    <color name="option_button_text_color">#FFFFFF</color>
+
 </resources>

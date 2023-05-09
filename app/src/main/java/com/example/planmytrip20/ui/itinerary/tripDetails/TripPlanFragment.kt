@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.planmytrip20.classes.ItineraryLocation
 import com.example.planmytrip20.databinding.FragmentTripPlanBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
+import com.example.planmytrip20.ui.itinerary.maps.MapBottomSheetFragment
+import com.google.gson.GsonBuilder
 
 class TripPlanFragment(private val viewModelOwner: ViewModelStoreOwner) : Fragment() {
     private var _binding: FragmentTripPlanBinding? = null
@@ -36,8 +38,6 @@ class TripPlanFragment(private val viewModelOwner: ViewModelStoreOwner) : Fragme
                 if(newLocations.isNotEmpty()) {
                     itineraryViewModel.latestIndex.observe(viewLifecycleOwner, Observer {
                         adapter = ChecklistRecyclerViewAdapter(context, itineraryViewModel, newLocations, it)
-                        if(it>0)
-                            this.scrollToPosition(it-1)
                     })
                 }
             })
