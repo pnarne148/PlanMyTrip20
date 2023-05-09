@@ -66,14 +66,20 @@ class FirebaseHelper() {
     }
 
     fun getAllItineraries(callback: (List<ItineraryExport>) -> Unit){
+
+        Log.d(TAG, "getAllItineraries: "+"/itinerary/"+FirebaseAuth.getInstance().currentUser?.uid+"/trips/")
+
         database.db.collection("/itinerary/"+FirebaseAuth.getInstance().currentUser?.uid+"/trips/")
             .get()
             .addOnSuccessListener { result ->
                 var trips = emptyList<ItineraryExport>()
                 for (document in result) {
                     val trip = document.toObject(ItineraryExport::class.java)
-                    trips.plus(trip)
+                    Log.d(TAG, "getAllItineraries: "+trip.destination?.name)
+
+                    trips = trips.plus(trip)
                 }
+                Log.d(TAG, "getAllItineraries: "+trips.size)
                 callback(trips)
             }
             .addOnFailureListener { exception ->

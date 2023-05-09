@@ -26,7 +26,12 @@
             android:id="@+id/itinerary_item_image_view"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/test_image"/>
+            android:src="@drawable/test_image"
+            android:background="@drawable/bg_dotted_rectangle"
+            android:scaleType="centerCrop"
+            android:clipToOutline="true"
+            android:padding="0dp"/>
+
         <LinearLayout
             android:orientation="vertical"
             android:id="@+id/itinerary_desc"
@@ -41,12 +46,14 @@
                 android:textStyle="bold"
                 android:text="Trip to Paris"/>
             <TextView
-                android:id="@+id/latLng_location"
+                android:id="@+id/date_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/location_24"
+
+                android:drawableLeft="@drawable/ic_calendar_month_24"
                 android:drawableTint="@color/blue"
                 android:padding="5dp"
+                android:drawablePadding="5dp"
                 android:text="Location"/>
         </LinearLayout>
 

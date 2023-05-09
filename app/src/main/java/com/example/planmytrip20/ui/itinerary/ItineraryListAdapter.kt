@@ -25,7 +25,6 @@ class ItineraryListAdapter (private val context: Context,
 
     override fun onBindViewHolder(holder: ItineraryListAdapter.ViewHolder, position: Int) {
         holder.locationName.text = itineraries[position].name
-        holder.latLngLocation.text = "${itineraries[position].latLng.latitude}, ${itineraries[position].latLng.longitude}"
 
         //TODO: update the image view src with itinerary image url
 
@@ -41,7 +40,6 @@ class ItineraryListAdapter (private val context: Context,
     class ViewHolder(binding: ItineraryListItemBinding)  : RecyclerView.ViewHolder(binding.root){
         var itineraryImageView: ImageView = binding.itineraryItemImageView
         var locationName: TextView = binding.itineraryItemHeaderView
-        var latLngLocation: TextView = binding.latLngLocation
         var deleteButton: ImageView = binding.deleteItineraryIcon
     }
 

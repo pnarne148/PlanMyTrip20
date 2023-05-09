@@ -21,6 +21,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Collections
 
 class ItineraryViewModel : ViewModel() {
@@ -90,14 +91,33 @@ class ItineraryViewModel : ViewModel() {
     fun setNotes(str:String)
     {
         _notes.value = str
+        updateFirebaseDB()
     }
 
     fun setDestination(loc : ItineraryLocation?)
     {
-        _destination.value = loc
         if (loc != null) {
             fetchNearByPlaces(loc)
         }
+        viewModelScope.launch {
+            val imageURL = withContext(Dispatchers.IO) {
+                loc?.name?.let { WikipediaApi.getImageUrlFromWikipedia(it) }
+            }
+
+            val desc = withContext(Dispatchers.IO) {
+                loc?.name?.let { WikipediaApi.getFirstParagraphFromWikipedia(it) }
+            }
+
+            val wikiURl = loc?.name?.let { WikipediaApi.getURL(it) }
+
+            if (loc != null) {
+                loc.location_image_url = imageURL
+                loc.wikiUrl = wikiURl
+                loc.description = desc
+            }
+        }
+
+        _destination.value = loc
     }
 
     fun getNearbyPlaces()
@@ -271,7 +291,8 @@ class ItineraryViewModel : ViewModel() {
         val newAttractions = chosenPlaces.value.orEmpty().map { it.copy(bitmap = null) }
         val newRecommendations = recommendedPlaces.value.orEmpty().map { it.copy(bitmap = null) }
 
-        val newItinerary = ItineraryExport(newDestination, newAttractions, newRecommendations, notes.value, LocalDateTime.now())
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val newItinerary = ItineraryExport(newDestination, newAttractions, newRecommendations, notes.value, LocalDateTime.now().format(formatter))
 
         if(docReference.value.equals(""))
             FirebaseHelper().createNewItinerary(newItinerary){
