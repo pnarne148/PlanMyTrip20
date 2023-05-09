@@ -5,11 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.ListFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +13,7 @@ import com.example.planmytrip20.R
 import com.example.planmytrip20.classes.Item
 import com.example.planmytrip20.databinding.FragmentHomeBinding
 import com.example.planmytrip20.ui.home.DetailFragment.DetailFragment
+import com.example.planmytrip20.ui.home.DetailFragment.ListFragment
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.auth.ktx.auth
