@@ -96,6 +96,19 @@
     </string>
     <string name="action_settings">Settings</string>
 
+    <string name="pexelheading">Photos from around the world</string>
+    <string name="pexelPhotoBy">Photo by</string>
+    <string name="pexelSource">Source: Pexels</string>
+
+    <string name="travel">travel</string>
+    <string name="nature">nature</string>
+    <string name="landscapes">landscapes</string>
+    <string name="cities">cities</string>
+    <string name="adventure">adventure</string>
+    <string name="trekking">trekking</string>
+    <string name="monuments">monuments</string>
+    <string name="food">food</string>
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="plan_trip_heading">Plan a new Trip</string>
     <string name="maps_api_key">AIzaSyD0IAwuCADIsl-MFp1yhhGWBXxgjlUjbFw</string>

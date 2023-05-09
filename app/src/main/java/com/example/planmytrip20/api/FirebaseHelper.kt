@@ -65,7 +65,7 @@ class FirebaseHelper() {
             }
     }
 
-    fun getAllItineraries(callback: (List<ItineraryExport>) -> Unit){
+    fun getAllItineraries(callback: (List<ItineraryExport>, List<String>) -> Unit){
 
         Log.d(TAG, "getAllItineraries: "+"/itinerary/"+FirebaseAuth.getInstance().currentUser?.uid+"/trips/")
 
@@ -73,18 +73,32 @@ class FirebaseHelper() {
             .get()
             .addOnSuccessListener { result ->
                 var trips = emptyList<ItineraryExport>()
+                var documentIds = emptyList<String>()
+
                 for (document in result) {
                     val trip = document.toObject(ItineraryExport::class.java)
                     Log.d(TAG, "getAllItineraries: "+trip.destination?.name)
-
+                    documentIds = documentIds.plus(document.id)
                     trips = trips.plus(trip)
                 }
                 Log.d(TAG, "getAllItineraries: "+trips.size)
-                callback(trips)
+                callback(trips, documentIds)
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
-                callback(emptyList())
+                callback(emptyList(), emptyList<String>())
+            }
+    }
+
+    fun deleteItinerary(docReference: String){
+
+        database.db.document("/itinerary/"+FirebaseAuth.getInstance().currentUser?.uid+"/trips/"+docReference)
+            .delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "DocumentSnapshot successfully deleted!")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error deleting document", e)
             }
     }
 

@@ -121,7 +121,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun populateMyTrips() {
-        FirebaseHelper().getAllItineraries {
+        FirebaseHelper().getAllItineraries { it, doc ->
             Log.d("firebase", "populateMyTrips: "+it.size)
 
             if(it.size == 0){
@@ -131,7 +131,7 @@ class ProfileFragment : Fragment() {
                 binding.itineraryListHeader.text = "My Trips"
             }
 
-            binding.tripsList.adapter = TripAdapter(it)
+            binding.tripsList.adapter = TripAdapter(it, doc)
         }
     }
 
