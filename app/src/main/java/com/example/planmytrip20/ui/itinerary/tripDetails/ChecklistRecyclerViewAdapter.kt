@@ -123,6 +123,7 @@ class ChecklistRecyclerViewAdapter(private val viewModel: ItineraryViewModel, pr
             holder.statusBar.setBackgroundColor(context.resources.getColor(R.color.green))
         }
 
+        //njnnj
         if(position == locations.size - 1 && !locations[position].visited) {
             holder.placeElementsLayout.removeAllViews()
             holder.completedView.removeAllViews()

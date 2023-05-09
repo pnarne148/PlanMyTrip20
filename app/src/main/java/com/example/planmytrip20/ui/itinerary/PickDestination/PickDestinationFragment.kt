@@ -52,7 +52,7 @@ class PickDestinationFragment : Fragment() {
 
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                selectedLocation = ItineraryLocation(0.toString(), place.id, place.name, place.address, place.latLng!!, OpeningHours(true), false, "", "", place.rating, "", null, null)
+                selectedLocation = ItineraryLocation(0.toString(), place.id, place.name, place.address,  OpeningHours(true),place.latLng?.latitude!!,place.latLng?.longitude!!, false, "", "", place.rating, "", null, null)
                 view.findViewById<Button>(R.id.startPlanning).isEnabled = true
             }
 
@@ -70,7 +70,7 @@ class PickDestinationFragment : Fragment() {
 
             val bundle = Bundle()
             bundle.putString("place", selectedLocation.address)
-            bundle.putParcelable("location", selectedLocation.latLng)
+            bundle.putParcelable("location", selectedLocation.getLatLng())
             bundle.putParcelable("selLocation", selectedLocation)
             fragment.arguments = bundle
 

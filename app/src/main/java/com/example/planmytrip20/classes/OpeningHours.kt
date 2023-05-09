@@ -4,6 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class OpeningHours(val open_now: Boolean) : Parcelable {
+
+    constructor() : this(true)
+
     constructor(parcel: Parcel) : this(parcel.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

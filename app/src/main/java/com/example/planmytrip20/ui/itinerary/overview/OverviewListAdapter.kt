@@ -78,7 +78,7 @@ class OverviewListAdapter(
                 viewHolderPlaces.bind(item)
             }
             VIEW_TYPE_FLIGHTS -> {
-                val viewHolderFlights = holder as ViewHolderPlaces
+                val viewHolderFlights = holder as ViewHolderFlights
                 viewHolderFlights.bind(item)
             }
         }
@@ -234,8 +234,8 @@ class OverviewListAdapter(
 
             viewModel.destination.observe(viewLifecycleOwner, Observer {
                 val bounds = LatLngBounds(
-                    LatLng(it.latLng?.latitude?.minus(10) ?: 37.7749, it.latLng?.longitude?.minus(10) ?: -122.4194),
-                    LatLng(it.latLng?.latitude?.minus(10) ?: 37.7749, it.latLng?.longitude?.minus(10) ?: -122.4194),
+                    LatLng(it.latitude?.minus(10) ?: 37.7749, it.longitude?.minus(10) ?: -122.4194),
+                    LatLng(it.latitude?.minus(10) ?: 37.7749, it.longitude?.minus(10) ?: -122.4194),
                 )
 
                 val autocompleteFrag = AutocompleteSupportFragment()
@@ -243,7 +243,7 @@ class OverviewListAdapter(
 
                 val locationRestriction = RectangularBounds.newInstance(bounds)
 
-                //code to bound location search
+//                code to bound location search
 //                autocompleteFrag.setLocationRestriction(locationRestriction)
 
                 val transaction = fragmentManager.beginTransaction()
@@ -254,7 +254,7 @@ class OverviewListAdapter(
                     override fun onPlaceSelected(place: Place) {
                         Log.d("itinerery", "onPlaceSelected: "+place.latLng)
                         viewModel.addPlace(
-                            ItineraryLocation(0.toString(), place.id, place.name, place.address, place.latLng!!, OpeningHours(true), false, "", "", place.rating, "", null, null)
+                            ItineraryLocation(0.toString(), place.id, place.name, place.address, OpeningHours(true),  place.latLng?.latitude!!, place.latLng?.longitude!!,false, "", "", place.rating, "", null, null)
                         )
                     }
 
