@@ -183,6 +183,7 @@ class HomeFragment : Fragment() {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
+                    Log.d("firebase", "fetchUsername: ")
                     val username = document.getString("userName") ?: "User"
                     updateWelcomeMessage(username)
                 } else {
