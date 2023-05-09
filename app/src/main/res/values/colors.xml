@@ -17,4 +17,5 @@
     <color name="lightgray3">#D1D1D3</color>
     <color name="lightgray2">#6B757F</color>
     <color name="done">#3F51B5</color>
+    <color name="darkgray">#474747</color>
 </resources>

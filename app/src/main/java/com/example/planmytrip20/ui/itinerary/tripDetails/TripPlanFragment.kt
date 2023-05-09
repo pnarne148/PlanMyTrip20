@@ -36,8 +36,6 @@ class TripPlanFragment(private val viewModelOwner: ViewModelStoreOwner) : Fragme
                 if(newLocations.isNotEmpty()) {
                     itineraryViewModel.latestIndex.observe(viewLifecycleOwner, Observer {
                         adapter = ChecklistRecyclerViewAdapter(context, itineraryViewModel, newLocations, it)
-                        if(it>0)
-                            this.scrollToPosition(it-1)
                     })
                 }
             })

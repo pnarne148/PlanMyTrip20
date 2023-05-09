@@ -29,7 +29,7 @@ class ItineraryViewModel : ViewModel() {
     }
 
     private val _latestIndex = MutableLiveData<Int>().apply {
-        value = 0
+        value = -1
     }
     val latestIndex : LiveData<Int> = _latestIndex
 

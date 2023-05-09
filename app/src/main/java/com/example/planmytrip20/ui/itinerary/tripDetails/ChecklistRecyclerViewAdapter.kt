@@ -12,6 +12,7 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.example.planmytrip20.R
 import com.example.planmytrip20.classes.ItineraryLocation
 import com.example.planmytrip20.databinding.ItineraryLocationListItemBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
@@ -53,32 +54,70 @@ class ChecklistRecyclerViewAdapter(
 
         holder.checkBox.isChecked = locations[position].visited
 
-        if(position.equals(lastVisited))
-        {
-            Log.d(TAG, "onBindViewHolder: lastvisited"+lastVisited)
-            Log.d(TAG, "onBindViewHolder: lastvisited"+position)
-            holder.placeElementsLayout.visibility = View.VISIBLE
-            holder.checkBox.isEnabled = true
-        } else if(position < lastVisited){
-            holder.completedView.visibility = View.VISIBLE
-        } else{
 
+        if(locations[position].visited && locations[position]?.user_photo_urls != null && locations[position]?.user_photo_urls?.isNotEmpty()!!) {
+            holder.addPhotosLabelView.visibility = View.VISIBLE
+            holder.photoListView.visibility = View.VISIBLE
+        } else if(locations[position].visited && (locations[position]?.user_photo_urls == null || locations[position]?.user_photo_urls != null && !(locations[position].user_photo_urls?.isNotEmpty()!!))) {
+            holder.photoListView.visibility = View.GONE
+            holder.addPhotosLabelView.visibility = View.VISIBLE
+        } else{
+            holder.photoListView.visibility = View.GONE
+            holder.addPhotosLabelView.visibility = View.GONE
         }
 
-        if(position == lastVisited-1)
+
+        Log.d(TAG, lastVisited.toString())
+
+        if(position == lastVisited)
+        {
+            holder.placeElementsLayout.visibility = View.VISIBLE
+            holder.checkBox.isEnabled = true
+            holder.statusBar.setBackgroundColor(context.resources.getColor(R.color.green))
+        } else if(position < lastVisited){
+            holder.completedView.visibility = View.VISIBLE
+            holder.statusBar.setBackgroundColor(context.resources.getColor(R.color.green))
+            holder.verticalLineView.setBackgroundColor(context.resources.getColor(R.color.green))
+        } else{
+            Log.d(TAG, "onBindViewHolder: ")
+            holder.placeElementsLayout.visibility = View.GONE
+            holder.statusText.text = "Not Yet Started"
+            holder.statusText.setTextColor(context.resources.getColor(R.color.red))
+            holder.completedView.visibility = View.VISIBLE
+            holder.statusText.visibility = View.VISIBLE
+            holder.statusBar.setBackgroundColor(context.resources.getColor(R.color.darkgray))
+            holder.verticalLineView.setBackgroundColor(context.resources.getColor(R.color.darkgray))
+        }
+
+        if(position == lastVisited+1)
             holder.checkBox.isEnabled = true
 
-        holder.checkBox.setOnCheckedChangeListener { button, checked ->
+        holder.checkBox.setOnCheckedChangeListener { _, checked ->
             Log.d("Adapter", "This is a OnCheckedChangeListener")
             if(checked)
             {
                 viewModel.setIndex(lastVisited+1)
-                viewModel.visitPlace(position,checked)
+                viewModel.visitPlace(position,true)
             }
             else
             {
-                viewModel.visitPlace(position,checked)
+                viewModel.visitPlace(position,false)
                 viewModel.setIndex(lastVisited-1)
+            }
+        }
+
+        if(position != locations.size - 1){
+            holder.carDirection.setOnClickListener{
+                openMap?.invoke(locations[position], locations[position + 1], "DRIVING")
+            }
+            holder.bikeDirection.setOnClickListener{
+                openMap?.invoke(locations[position], locations[position + 1], "BICYCLE")
+            }
+            holder.restaurantView.setOnClickListener{
+                openMap?.invoke(locations[position], locations[position + 1], "restaurant")
+            }
+            holder.gasStationView.setOnClickListener{
+                openMap?.invoke(locations[position], locations[position + 1], "gas_station")
             }
         }
 
@@ -87,7 +126,17 @@ class ChecklistRecyclerViewAdapter(
         }
 
         holder.webViewLocation.setOnClickListener{
-            openWebView?.invoke(locations[position].wikiUrl.toString())
+//            openWebView?.invoke(locations[position].wikiUrl.toString())
+            holder.locDesc.maxLines = Integer.MAX_VALUE
+            holder.hideDesc.visibility = View.VISIBLE
+            holder.webViewLocation.visibility = View.GONE
+        }
+
+        holder.hideDesc.setOnClickListener{
+//            openWebView?.invoke(locations[position].wikiUrl.toString())
+            holder.locDesc.maxLines = 3
+            holder.webViewLocation.visibility = View.VISIBLE
+            holder.hideDesc.visibility = View.GONE
         }
 
     }
@@ -121,6 +170,8 @@ class ChecklistRecyclerViewAdapter(
         var photoListView: LinearLayout = binding.userImagesView
         var locationDescLayoutView : LinearLayout = binding.locationDescView
         var webViewLocation: TextView = binding.webViewLocation
+        var locDesc: TextView = binding.locationDescription
+        var hideDesc: TextView = binding.hideDesc
     }
 
     companion object {
