@@ -246,6 +246,8 @@ class EditProfileFragment : Fragment(), OnBackPressedListener {
             val emergencyPhNo = binding.editableEmergencyPhNo.text.toString()
             val address = binding.editableAddress.text.toString()
             val user = FirebaseAuth.getInstance().currentUser
+            val sosOn = sos
+            val isPremiumUser = premUser
             val uid = user?.uid
             val email = user?.email
             Log.d(
@@ -258,7 +260,9 @@ class EditProfileFragment : Fragment(), OnBackPressedListener {
                 "email" to email,
                 "emergencyContact" to emergencyPhNo,
                 "address" to address,
-                "uid" to uid
+                "uid" to uid,
+                "isPremiumActive" to isPremiumUser,
+                "sos" to sosOn
             )
             if (uid != null) {
                 database.db.collection("userDetails").document(uid).set(userDetails)
