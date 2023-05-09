@@ -1,14 +1,10 @@
 package com.example.planmytrip20.ui.itinerary.tripDetails
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,15 +16,8 @@ import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
-import androidx.core.app.ActivityCompat.startActivityForResult
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 
 import com.example.planmytrip20.R
@@ -37,25 +26,19 @@ import com.example.planmytrip20.databinding.ItineraryLocationListItemBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
 import com.example.planmytrip20.ui.itinerary.maps.MapBottomSheetFragment
 import com.google.android.material.card.MaterialCardView
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.storage
 import com.google.gson.GsonBuilder
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import java.util.*
+import kotlin.reflect.KFunction0
 
 class ChecklistRecyclerViewAdapter(
-
-
     private val context: Context,
     private val viewModel: ItineraryViewModel,
     private val locations: List<ItineraryLocation>,
     private val lastVisited: Int,
-    private val startGalleryIntent: () -> Unit
+    private val startGalleryIntent: (Int) -> Unit
 ):
     RecyclerView.Adapter<ChecklistRecyclerViewAdapter.ModelViewHolder>()  {
 
@@ -69,16 +52,6 @@ class ChecklistRecyclerViewAdapter(
     var onCheckBoxChange : ((Int, Boolean) -> Unit)? = null
 
     var openWebView : ((String) -> Unit)? = null
-
-
-//    private fun startGalleryIntent() {
-//        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-//        cameraLauncher.launch(galleryIntent)
-//    }
-
-
-
-
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -96,6 +69,9 @@ class ChecklistRecyclerViewAdapter(
         position: Int,
     ) {
 
+        val urls = locations[position].user_photo_urls?.filterNotNull() ?: emptyList()
+        var adapter = PhotoListAdapter(context, urls)
+        holder.photoRecyclerView.adapter = adapter
 
         holder.locationName.text = locations[position].name
         holder.locationDesc.text = locations[position].description
@@ -160,15 +136,12 @@ class ChecklistRecyclerViewAdapter(
 
         holder.checkBox.setOnCheckedChangeListener { _, checked ->
             Log.d(TAG, "This is a OnCheckedChangeListener")
-            if(checked)
-            {
-                viewModel.setIndex(lastVisited+1)
-                viewModel.visitPlace(position,true)
-            }
-            else
-            {
-                viewModel.visitPlace(position,false)
-                viewModel.setIndex(lastVisited-1)
+            if (checked) {
+                viewModel.setIndex(lastVisited + 1)
+                viewModel.visitPlace(position, true)
+            } else {
+                viewModel.visitPlace(position, false)
+                viewModel.setIndex(lastVisited - 1)
             }
         }
 
@@ -189,9 +162,7 @@ class ChecklistRecyclerViewAdapter(
 
         holder.addPhotosLabelView.setOnClickListener{
             //TODO: Add logic to add photos to each location and retrieve urls\
-            startGalleryIntent()
-
-
+            startGalleryIntent(position)
         }
 
         holder.webViewLocation.setOnClickListener{
@@ -201,12 +172,20 @@ class ChecklistRecyclerViewAdapter(
         }
 
         holder.hideDesc.setOnClickListener{
-//            openWebView?.invoke(locations[position].wikiUrl.toString())
+            openWebView?.invoke(locations[position].wikiUrl.toString())
             holder.locDesc.maxLines = 3
             holder.webViewLocation.visibility = View.VISIBLE
             holder.hideDesc.visibility = View.GONE
         }
 
+    }
+
+    private fun openGalleryIntent(position: Int){
+        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "image/*"
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        }
+        context.startActivity(galleryIntent)
     }
 
     private fun viewOnMap(loc1: ItineraryLocation, loc2: ItineraryLocation, mapType: String) {
@@ -225,9 +204,9 @@ class ChecklistRecyclerViewAdapter(
         return locations.size
     }
 
-
     inner class ModelViewHolder(binding: ItineraryLocationListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
+        var _binding = binding
         var locationName : TextView = binding.locationName
         var locationDesc : TextView = binding.locationDescription
         var locationVisited : CheckBox = binding.locationVisited
@@ -253,6 +232,7 @@ class ChecklistRecyclerViewAdapter(
         var locDesc: TextView = binding.locationDescription
         var hideDesc: TextView = binding.hideDesc
         var startPointView: LinearLayout = binding.startPoint
+        var photoRecyclerView: RecyclerView = binding.photoGalleryView
     }
 
     companion object {
