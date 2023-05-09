@@ -16,7 +16,7 @@ data class ItineraryLocation(
     var longitude: Double,
     var visited : Boolean = false,
     var description: String?,
-    val location_image_url: String? = null,
+    var location_image_url: String? = null,
     var rating: Double?,
     var wikiUrl: String? = null,
     var user_photo_urls: List<String>? = emptyList(),

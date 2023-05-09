@@ -30,5 +30,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/mobile_navigation" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/sosButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_sos_24"
+        app:layout_anchorGravity="bottom|end"
+        app:backgroundTint="@color/red"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginRight="@dimen/tab_height"
+        android:layout_marginBottom="90dp"
+        app:tint="@color/white" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

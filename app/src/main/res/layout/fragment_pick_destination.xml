@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:id="@+id/pick_destination"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     tools:context=".ui.itinerary.PickDestination.PickDestinationFragment"
     android:paddingVertical="@dimen/heading_margin">
 

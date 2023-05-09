@@ -7,7 +7,7 @@ data class ItineraryExport(
     val attraction: List<ItineraryLocation>,
     val recommendations: List<ItineraryLocation>,
     val notes: String?,
-    val date: LocalDateTime?
+    val date: String?
 ){
-    constructor() : this(null, emptyList(), emptyList(), "", null)
+    constructor() : this(null, emptyList(), emptyList(), "", "")
 }

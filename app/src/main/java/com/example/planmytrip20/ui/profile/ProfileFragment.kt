@@ -29,9 +29,11 @@ import coil.load
 import coil.transform.CircleCropTransformation
 import com.example.planmytrip.auth.LoginActivity
 import com.example.planmytrip20.R
+import com.example.planmytrip20.api.FirebaseHelper
 import com.example.planmytrip20.classes.database
 import com.example.planmytrip20.databinding.FragmentProfileBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
+import com.example.planmytrip20.ui.profile.TripAdapter.TripAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.storage.FirebaseStorage
@@ -69,10 +71,6 @@ class ProfileFragment : Fragment() {
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-
-
-//        _binding = FragmentProfileBinding.inflate(inflater, container, false)
-//        val root: View = binding.root
         val profileViewModel =
             ViewModelProvider(this).get(ProfileViewModel::class.java)
         populateUI()
@@ -85,10 +83,11 @@ class ProfileFragment : Fragment() {
             val intent = Intent(requireContext(), LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
+
             // Get the FragmentManager
             val fragmentManager = requireActivity().supportFragmentManager
 
-// Pop the back stack to close the current fragment
+            // Pop the back stack to close the current fragment
             fragmentManager.popBackStack()
 
         }
@@ -115,13 +114,26 @@ class ProfileFragment : Fragment() {
         }
 
 
-
-        //when you click on the image
+        populateMyTrips()
 
 
         return binding.root
     }
 
+    private fun populateMyTrips() {
+        FirebaseHelper().getAllItineraries { it, doc ->
+            Log.d("firebase", "populateMyTrips: "+it.size)
+
+            if(it.size == 0){
+                binding.itineraryListHeader.text = "There are currently no trips available. Start planning your trip to see your trips here."
+            }
+            else{
+                binding.itineraryListHeader.text = "My Trips"
+            }
+
+            binding.tripsList.adapter = TripAdapter(it, doc)
+        }
+    }
 
 
     override fun onDestroyView() {

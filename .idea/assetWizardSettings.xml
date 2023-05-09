@@ -23,7 +23,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/place/baseline_place_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/sos/baseline_sos_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -33,8 +33,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="1863c6" />
-                            <entry key="outputName" value="ic_place__blue_32dp" />
+                            <entry key="color" value="c61832" />
+                            <entry key="outputName" value="baseline_sos_24" />
                             <entry key="sourceFile" value="C:\Users\narne\OneDrive\Documents\GitHub\PlanMyTrip20" />
                           </map>
                         </option>

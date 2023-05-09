@@ -5,11 +5,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridLayout
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.planmytrip.api.PexelsApiService
+import com.example.planmytrip.api.PexelsPhoto
 import com.example.planmytrip20.R
 import com.example.planmytrip20.classes.Item
 import com.example.planmytrip20.databinding.FragmentHomeBinding
@@ -20,6 +27,7 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
 
@@ -55,6 +63,32 @@ class HomeFragment : Fragment() {
         return root
     }
 
+    private fun fetchTopTravelPhotos() {
+        // Create a list of different keywords
+        val keywords = listOf(getString(R.string.travel),
+            getString(R.string.nature),
+            getString(R.string.landscapes),
+            getString(R.string.cities),
+            getString(R.string.adventure),
+            getString(R.string.trekking),
+            getString(R.string.monuments),
+            getString(R.string.food)
+        )
+
+        // Shuffle the list to get a random keyword
+        val randomKeyword = keywords.shuffled().first()
+
+        lifecycleScope.launch {
+            try {
+                val response = PexelsApiService.retrofitService.searchPhotos(randomKeyword, 4, 1)
+                displayTravelPhotos(response.photos)
+            } catch (e: Exception) {
+                Log.e("Homepage", "Error fetching travel photos: ", e)
+            }
+        }
+    }
+    
+    
     private fun fetchDataFromFirestore() {
         val db = Firebase.firestore
         val itemList = mutableListOf<Item>()
@@ -105,6 +139,38 @@ class HomeFragment : Fragment() {
         recyclerViewCard.adapter = listAdapter
     }
 
+    private fun displayTravelPhotos(photos: List<PexelsPhoto>) {
+        // Use a GridLayout with 2 columns to display the photos
+        val gridLayout = view?.findViewById<GridLayout>(R.id.travelPhotosGridLayout)
+        gridLayout?.columnCount = 1
+        val inflater = LayoutInflater.from(requireContext())
+
+        photos.forEach { photo ->
+            // Inflate the travel_photo_item layout
+            val travelPhotoItemView = inflater.inflate(R.layout.travel_photo_item, gridLayout, false)
+
+            // Find and set the ImageView, Photographer's Name, and Photo Source in the layout
+            val imageView = travelPhotoItemView.findViewById<ImageView>(R.id.travelPhotoImageView)
+            val photographerNameTextView = travelPhotoItemView.findViewById<TextView>(R.id.photographerNameTextView)
+            val photoSourceTextView = travelPhotoItemView.findViewById<TextView>(R.id.photoSourceTextView)
+
+            // Load the photo URL into the ImageView using Glide
+            Glide.with(requireContext())
+                .load(photo.src.large)
+                .into(imageView)
+
+            // Set the photographer's name
+            val photographerNameString = getString(R.string.pexelPhotoBy)
+            photographerNameTextView.text = photographerNameString + ": " +photo.photographer
+
+            // Set the photo source (assuming Pexels as the source)
+            photoSourceTextView.text = getString(R.string.pexelSource)
+
+            // Add the travel_photo_item layout to the GridLayout
+            gridLayout?.addView(travelPhotoItemView)
+        }
+    }
+
     private fun fetchUsername(userId: String?) {
         if (userId == null) {
             Log.w("Homepage", "User ID is null")
@@ -117,6 +183,7 @@ class HomeFragment : Fragment() {
             .get()
             .addOnSuccessListener { document ->
                 if (document != null) {
+                    Log.d("firebase", "fetchUsername: ")
                     val username = document.getString("userName") ?: "User"
                     updateWelcomeMessage(username)
                 } else {
@@ -144,7 +211,8 @@ class HomeFragment : Fragment() {
         // Fetch data from Firestore
         fetchDataFromFirestore()
 
-
+        // Pexels api data retrieval
+        fetchTopTravelPhotos()
 
         // Find the EditText
         val editText = binding.editTextSearchHomepage

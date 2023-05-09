@@ -85,10 +85,15 @@
 
     </RelativeLayout>
 
-     <RelativeLayout
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rellay1">
+
+        <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rellay1">
+        >
 
          <LinearLayout
              android:layout_width="match_parent"
@@ -112,8 +117,8 @@
                      android:textSize="13sp" />
 
                  <TextView
+                     android:layout_width="match_parent"
                      android:id="@+id/email"
-                     android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      android:fontFamily="sans-serif-light"
                      android:text="useremail"
@@ -138,7 +143,7 @@
 
                  <EditText
                      android:id="@+id/editablePhNo"
-                     android:layout_width="wrap_content"
+                     android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:fontFamily="sans-serif-light"
                      android:hint="user phone number"
@@ -164,7 +169,7 @@
 
                  <EditText
                      android:id="@+id/editableEmergencyPhNo"
-                     android:layout_width="wrap_content"
+                     android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:fontFamily="sans-serif-light"
                      android:hint=" sos contact number"
@@ -190,7 +195,7 @@
 
                  <EditText
                      android:id="@+id/editableAddress"
-                     android:layout_width="wrap_content"
+                     android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:fontFamily="sans-serif-light"
                      android:hint="user address"
@@ -207,12 +212,14 @@
                  android:layout_height="wrap_content"
                  android:layout_marginTop="15dp"
                  android:gravity="center_vertical"
+                 android:layout_marginRight="80dp"
                  android:orientation="horizontal">
 
                  <TextView
                      android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
                      android:text="SOS"
+                     android:layout_marginRight="@dimen/tab_height"
                      android:textColor="@color/headings"
                      android:textSize="13sp" />
 
@@ -220,10 +227,11 @@
                      android:id="@+id/sos_on"
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
-                     android:layout_gravity="right"
+                     android:layout_gravity="center"
                      android:layout_marginStart="10dp"
                      android:layout_marginLeft="10dp"
-                     android:gravity="right"
+                     android:layout_marginRight="30dp"
+                     android:gravity="center"
                      android:thumbTint="@color/gradEnd" />
 
              </LinearLayout>
@@ -232,6 +240,7 @@
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"
                  android:layout_marginTop="15dp"
+                 android:layout_marginRight="80dp"
                  android:gravity="center_vertical"
                  android:orientation="horizontal">
 
@@ -263,4 +272,7 @@
          </LinearLayout>
 
     </RelativeLayout>
+
+    </ScrollView>
+
 </RelativeLayout>

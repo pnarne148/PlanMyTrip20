@@ -157,8 +157,10 @@ class EditProfileFragment : Fragment(), OnBackPressedListener {
         binding.sosOn.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 sos="true"
+                (requireActivity() as MainActivity).enableSOS()
             } else {
                 sos="false"
+                (requireActivity() as MainActivity).disableSOS()
                 // Switch is off
                 // Update premium status in database or perform some operation
             }
