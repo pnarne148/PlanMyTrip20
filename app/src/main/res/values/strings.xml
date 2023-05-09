@@ -4,6 +4,7 @@
     <string name="title_itinerery">Itinerery</string>
     <string name="title_profile">Profile</string>
     <string name="title_activity_scrolling">ScrollingActivity</string>
+    <string name="twitterUsername">\+1 857 313 2397</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -100,5 +101,65 @@
     <string name="maps_api_key">AIzaSyD0IAwuCADIsl-MFp1yhhGWBXxgjlUjbFw</string>
 
     <string name="location_prompt">    Add location</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="australia">Australia</string>
+    <string name="bali">Bali</string>
+    <string name="dubai">Dubai</string>
+    <string name="france">France</string>
+    <string name="india">India</string>
+    <string name="italy">Italy</string>
+    <string name="singapore">Singapore</string>
+    <string name="china">China</string>
+    <string name="florida">Florida</string>
+    <string name="canada">Canada</string>
+    <string name="russia">Russia</string>
+    <string name="tokyo">Tokyo</string>
+    <string name="turkey">Turkey</string>
+    <string name="brazil">Brazil</string>
+    <string name="greece">Greece</string>
+    <string name="spain">Spain</string>
+    <string name="thailand">Thailand</string>
+    <string name="new_zealand">New Zealand</string>
+    <string name="mexico">Mexico</string>
+    <string name="south_africa">South Africa</string>
+    <string name="ireland">Ireland</string>
+    <string name="japan">Japan</string>
+    <string name="egypt">Egypt</string>
+    <string name="germany">Germany</string>
+    <string name="argentina">Argentina</string>
+    <string name="morocco">Morocco</string>
+    <string name="switzerland">Switzerland</string>
+    <string name="united_arab_emirates">United Arab Emirates</string>
+    <string name="peru">Peru</string>
+
+    <string name="australia_description">Australia: Australia\'s spectacular natural environment, multicultural communities, excellent food and wine, its weather and lifestyle and the friendliness and openness of its people make it one of the world\'s most attractive tourist destinations.</string>
+    <string name="bali_description">Bali: Bali Island is a small beautiful island and a part of Indonesia archipelago, and the most famous of Indonesian tourism in the world. It owns the panorama and unique culture that make this island is exclusive than others. Furthermore, It\'s location is in the tropical situation as Dream Island for a vacation.</string>
+    <string name="dubai_description">Dubai: Dubai is famous for contemporary sightseeing attractions such as the Burj Khalifa (the world\'s tallest building) and shopping malls that come complete with mammoth aquariums and indoor ski slopes. But this city has many cultural highlights and things to do, as well as all the glamorous modern add-ons.</string>
+    <string name="france_description">France: France is one of the oldest nations on Earth and the most ethnically diverse country in Europe. These deep and broad influences have made France a world leader throughout history in nearly all aspects of culture, including cuisine, wine-making, politics, philosophy, music, art, film, fashion, literature, and sports.</string>
+    <string name="india_description">India: India is a country that attracts millions of tourists every year and is considered one of the most popular tourist destinations in the world. These visitors are attracted to its natural beauty and cultural heritage. It has many historic sites as well like the Taj Mahal, Golden Temple, Red Fort, etc.</string>
+    <string name="italy_description">Italy: It has beautiful scenery ranging from its scenic coastal areas to its colourful mountain ranges. It has a vast wealth of culture, architecture and ancient sites. It has modern cities that embody contemporary Italy, and don\'t forget Italy\'s gifts to the world\'s taste buds, its wonderful cuisine and wines.</string>
+    <string name="singapore_description">Singapore: The exquisitely beautiful attractions like Sentosa Island, Gardens by the Bay, Universal Studios and Night Safari are the pride of Singapore tourism. Singapore is an ideal destination to plan a fun-filled holiday with family. There are a plethora of activities and attractions for your children.</string>
+    <string name="china_description">China: The Great Wall of China, The Forbidden City, Imperial Palace, The Terracotta Army, The Summer Palace, Li River, Guilin, Chengdu Research Base of Giant Panda Breeding, Yangtze River and the Three Gorges and many more.</string>
+    <string name="florida_description">Florida: World-famous attractions such as Walt Disney World and Universal Studios Florida make Orlando a year-round tourist destination, but there are many attractions and activities outside of the theme parks.</string>
+    <string name="canada_description">Canada: With so much breathtaking scenery and natural attractions, it\'s no surprise that Canada is known for its incredible hiking opportunities. From longer, more challenging treks to family-friendly day hikes, Canada has a wide array of trails for enjoying the country\'s natural splendor.</string>
+    <string name="russia_description">Russia: Major tourist routes in Russia include a travel around the Golden Ring of ancient cities, cruises on the big rivers including the Volga, and long journeys on the Trans-Siberian Railway.</string>
+    <string name="tokyo_description">Tokyo: Tokyo is known for iconic landmarks like the Tokyo Skytree and Shibuya Crossing. It\'s famous for its sakura tree-lined streets, shrines and temples, its otaku culture and wonderful cuisine, and its world-class transport system.</string>
+    <string name="turkey_description">Turkey: Historic ruins, bustling cities, beautiful beaches, mountains, shopping, excellent food, and all at an affordable price. So whatever you\'re looking for, be it a short city trip to Istanbul, a beach holiday along the south coast, or a place to travel for a while with a mix of everything, Turkey could be for you.</string>
+    <string name="brazil_description">Brazil: Brazil is famous for its stunning natural landscapes, vibrant cities, and diverse culture. Visitors can explore the Amazon Rainforest, relax on the beautiful beaches of Rio de Janeiro, or discover the rich history of colonial towns like Salvador and Ouro Preto.</string>
+    <string name="greece_description">Greece: Known for its picturesque islands, ancient ruins, and rich history, Greece offers a mix of cultural experiences and idyllic relaxation. Tourists can explore the Acropolis and Parthenon in Athens, walk through the ancient city of Delphi, or simply unwind on the beaches of Santorini and Mykonos.</string>
+    <string name="spain_description">Spain: Spain is famous for its diverse landscapes, vibrant cities, and rich cultural heritage. Tourists can explore the architectural wonders of Barcelona and Granada, enjoy the beaches of the Costa del Sol, and immerse themselves in the world-renowned art, food, and flamenco culture of Madrid and Seville.</string>
+    <string name="thailand_description">Thailand: Known as the Land of Smiles, Thailand offers a combination of bustling cities, idyllic beaches, and rich cultural experiences. Tourists can explore the bustling city of Bangkok, relax on the beaches of Phuket and Koh Samui, and visit ancient temples and ruins in Chiang Mai and Ayutthaya.</string>
+    <string name="new_zealand_description">New Zealand: New Zealand is known for its stunning natural landscapes, outdoor adventures, and friendly people. Tourists can explore the picturesque fjords of Milford Sound, hike through the mountains and forests of the South Island, and experience Maori culture in Rotorua and other North Island destinations.</string>
+    <string name="mexico_description">Mexico: Mexico offers a diverse blend of ancient history, vibrant culture, and beautiful natural landscapes. Tourists can explore the ancient Mayan and Aztec ruins of Chichen Itza and Teotihuacan, relax on the beaches of Cancun and Puerto Vallarta, and indulge in the rich culinary traditions of Mexico City and Oaxaca.</string>
+    <string name="south_africa_description">South Africa: South Africa is known for its diverse landscapes, wildlife, and rich cultural history. Visitors can explore the stunning Cape Town and its surrounding wine regions, go on safari in Kruger National Park, and learn about the country\'s history at sites like Robben Island and the Apartheid Museum in Johannesburg.</string>
+    <string name="ireland_description">Ireland: Known as the Emerald Isle, Ireland is famous for its rolling green landscapes, friendly locals, and rich cultural heritage. Visitors can explore the ancient sites of Newgrange and the Cliffs of Moher, experience traditional Irish music and dance in Galway and Dublin, and tour the picturesque Ring of Kerry and the Wild Atlantic Way.</string>
+    <string name="japan_description">Japan: Japan is a country known for its unique blend of ancient traditions and modern technology. Visitors can explore historic landmarks such as Kyoto\'s temples and shrines, experience the bustling city life in Tokyo, and enjoy the serene beauty of Mount Fuji.</string>
+    <string name="egypt_description">Egypt: Egypt is a country steeped in ancient history and remarkable monuments. Tourists can visit the iconic Pyramids of Giza, explore the temples of Luxor, cruise along the Nile River, and immerse themselves in the rich culture and mythology of this fascinating land.</string>
+    <string name="germany_description">Germany: Germany offers a mix of historical sites, vibrant cities, and picturesque landscapes. Visitors can explore the bustling capital Berlin, visit the fairy-tale castles of Bavaria, enjoy the beer gardens in Munich, and experience the festive atmosphere of the famous Christmas markets.</string>
+    <string name="argentina_description">Argentina: Argentina is a country of diverse landscapes, from the majestic Andes Mountains to the vast Pampas grasslands. Travelers can explore the vibrant capital of Buenos Aires, visit the stunning Iguazu Falls, and indulge in the rich flavors of Argentine cuisine and wine.</string>
+    <string name="morocco_description">Morocco: Morocco is a country known for its vibrant markets, stunning architecture, and diverse landscapes. Travelers can wander through the bustling streets of Marrakech, explore the ancient ruins of Volubilis, trek through the Sahara Desert, and savor the flavors of Moroccan cuisine.</string>
+    <string name="switzerland_description">Switzerland: Switzerland is a country renowned for its breathtaking Alpine scenery, charming villages, and outdoor adventures. Visitors can ski in the Swiss Alps, explore the picturesque cities of Zurich and Geneva, and cruise on the pristine lakes surrounded by snow-capped mountains.</string>
+    <string name="united_arab_emirates_description">United Arab Emirates: The UAE is a country known for its luxurious resorts, futuristic architecture, and rich cultural heritage. Tourists can visit the iconic Burj Khalifa in Dubai, explore the traditional markets in Abu Dhabi, and experience the desert landscapes of Sharjah.</string>
+    <string name="peru_description">Peru: Peru is a country of ancient ruins, stunning landscapes, and vibrant indigenous cultures. Travelers can hike the Inca Trail to reach the famous Machu Picchu, explore the colonial charm of Cusco, and embark on a journey through the Amazon rainforest.</string>
 
 </resources>
