@@ -22,11 +22,13 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.example.planmytrip.auth.LoginActivity
+import com.example.planmytrip20.R
 import com.example.planmytrip20.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -121,6 +123,22 @@ class ProfileFragment : Fragment() {
             fragmentManager.popBackStack()
 
         }
+
+        binding.settings.setOnClickListener {
+
+            val transaction = (context as AppCompatActivity).supportFragmentManager.beginTransaction()
+
+            // Create a new instance of EditProfileFragment
+            val editProfileFragment = EditProfileFragment()
+
+            transaction.replace(R.id.nav_host_fragment_activity_main, editProfileFragment)
+            transaction.addToBackStack(null)
+            transaction.setReorderingAllowed(true)
+            transaction.commit()
+
+        }
+
+
 
 
         //when you click on the image
