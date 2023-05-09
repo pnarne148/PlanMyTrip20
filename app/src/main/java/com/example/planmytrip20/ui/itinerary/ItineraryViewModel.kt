@@ -26,6 +26,16 @@ import java.util.Collections
 
 class ItineraryViewModel : ViewModel() {
 
+    private val userImages = listOf("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Ws6ooW4zGa1jK_TImjA6RFyJ7XmBhEWPeIpg5RUi&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBAHtWe-YxM_NBXquVRo8F5VCpyjC0_LUc4MSEr5PfydzsdUgH-mSQFkHGsV2Mgb75o1S4aLX6Emo&usqp=CAU&ec=48665698",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Ws6ooW4zGa1jK_TImjA6RFyJ7XmBhEWPeIpg5RUi&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBAHtWe-YxM_NBXquVRo8F5VCpyjC0_LUc4MSEr5PfydzsdUgH-mSQFkHGsV2Mgb75o1S4aLX6Emo&usqp=CAU&ec=48665698",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Ws6ooW4zGa1jK_TImjA6RFyJ7XmBhEWPeIpg5RUi&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBAHtWe-YxM_NBXquVRo8F5VCpyjC0_LUc4MSEr5PfydzsdUgH-mSQFkHGsV2Mgb75o1S4aLX6Emo&usqp=CAU&ec=48665698",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4Ws6ooW4zGa1jK_TImjA6RFyJ7XmBhEWPeIpg5RUi&s",
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBAHtWe-YxM_NBXquVRo8F5VCpyjC0_LUc4MSEr5PfydzsdUgH-mSQFkHGsV2Mgb75o1S4aLX6Emo&usqp=CAU&ec=48665698"
+    )
+
     private val _nextLocationIndex = MutableLiveData<Int>().apply {
         value = 2
     }
@@ -183,7 +193,7 @@ class ItineraryViewModel : ViewModel() {
                     Log.d("itinerery", "initializeLists: "+imageURL)
                     RecommendedLocations(result.name, LatLng(lat, lng), imageURL, bitmap, desc)
                     ItineraryLocation(index.toString(), result.place_id, result.name, result.name, result.opening_hours, lat, lng,
-                        false, desc, imageURL, result.rating, WikipediaApi.getURL(result.name), null, bitmap)
+                        false, desc, imageURL, result.rating, WikipediaApi.getURL(result.name), userImages, bitmap)
                 } else {
                     null
                 }

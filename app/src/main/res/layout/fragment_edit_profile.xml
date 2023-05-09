@@ -118,6 +118,7 @@
 
                  <TextView
                      android:layout_width="match_parent"
+                     android:id="@+id/email"
                      android:layout_height="wrap_content"
                      android:fontFamily="sans-serif-light"
                      android:text="useremail"
@@ -145,7 +146,8 @@
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:fontFamily="sans-serif-light"
-                     android:text="user phone number"
+                     android:hint="user phone number"
+                     android:textColorHint="@color/quantum_grey"
                      android:textColor="#000000"
                      android:textSize="18sp" />
 
@@ -170,7 +172,8 @@
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:fontFamily="sans-serif-light"
-                     android:text="@string/twitterUsername"
+                     android:hint=" sos contact number"
+                     android:textColorHint="@color/quantum_grey"
                      android:textColor="#000000"
                      android:textSize="18sp" />
 
@@ -195,7 +198,8 @@
                      android:layout_width="match_parent"
                      android:layout_height="wrap_content"
                      android:fontFamily="sans-serif-light"
-                     android:text="user address"
+                     android:hint="user address"
+                     android:textColorHint="@color/quantum_grey"
                      android:textColor="#000000"
                      android:textSize="18sp" />
 

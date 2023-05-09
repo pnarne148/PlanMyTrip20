@@ -1,35 +1,51 @@
 package com.example.planmytrip20.ui.itinerary.tripDetails
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+
 import com.example.planmytrip20.R
 import com.example.planmytrip20.classes.ItineraryLocation
 import com.example.planmytrip20.databinding.ItineraryLocationListItemBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
 import com.example.planmytrip20.ui.itinerary.maps.MapBottomSheetFragment
 import com.google.android.material.card.MaterialCardView
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.google.gson.GsonBuilder
-
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import java.util.*
+import kotlin.reflect.KFunction0
 
 class ChecklistRecyclerViewAdapter(
     private val context: Context,
     private val viewModel: ItineraryViewModel,
     private val locations: List<ItineraryLocation>,
     private val lastVisited: Int,
+    private val startGalleryIntent: (Int) -> Unit
 ):
     RecyclerView.Adapter<ChecklistRecyclerViewAdapter.ModelViewHolder>()  {
+
+    private lateinit var cameraLauncher: ActivityResultLauncher<Intent>
+
+    private val storageReference: StorageReference = FirebaseStorage.getInstance().reference
+    private val STORAGE_PERMISSION_CODE = 1001
 
     var openMap : ((ItineraryLocation, ItineraryLocation, String) -> Unit)? = null
 
@@ -41,6 +57,7 @@ class ChecklistRecyclerViewAdapter(
         parent: ViewGroup,
         viewType: Int,
     ): ChecklistRecyclerViewAdapter.ModelViewHolder {
+
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItineraryLocationListItemBinding.inflate(inflater, parent, false)
         return ModelViewHolder(binding)
@@ -51,6 +68,11 @@ class ChecklistRecyclerViewAdapter(
         holder: ModelViewHolder,
         position: Int,
     ) {
+
+        val urls = locations[position].user_photo_urls?.filterNotNull() ?: emptyList()
+        var adapter = PhotoListAdapter(context, urls)
+        holder.photoRecyclerView.adapter = adapter
+
         holder.locationName.text = locations[position].name
         holder.locationDesc.text = locations[position].description
         holder.ratingBar.numStars = locations[position].rating?.toInt() ?: 3
@@ -59,7 +81,7 @@ class ChecklistRecyclerViewAdapter(
 
         holder.checkBox.isChecked = locations[position].visited
 
-
+        Log.d(TAG, "Location${position} photos size : ${locations[position].user_photo_urls?.size}")
         if(locations[position].visited && locations[position]?.user_photo_urls != null && locations[position]?.user_photo_urls?.isNotEmpty()!!) {
             holder.addPhotosLabelView.visibility = View.VISIBLE
             holder.photoListView.visibility = View.VISIBLE
@@ -73,6 +95,10 @@ class ChecklistRecyclerViewAdapter(
 
 
         Log.d(TAG, lastVisited.toString())
+
+        if(position == 0){
+            holder.startPointView.visibility = View.VISIBLE
+        }
 
         if(position == lastVisited)
         {
@@ -94,20 +120,28 @@ class ChecklistRecyclerViewAdapter(
             holder.verticalLineView.setBackgroundColor(context.resources.getColor(R.color.darkgray))
         }
 
+        if(position == locations.size - 1 && locations[position].visited){
+            holder.placeElementsLayout.visibility = View.GONE
+            holder.completedView.visibility = View.VISIBLE
+            holder.statusText.text = "Woah...  you have successfully completed the trip"
+            holder.statusText.setTextColor(context.resources.getColor(R.color.green))
+        }
+        if(position == locations.size - 1 && !locations[position].visited){
+            holder.placeElementsLayout.visibility = View.GONE
+            holder.completedView.visibility = View.GONE
+        }
+
         if(position == lastVisited+1)
             holder.checkBox.isEnabled = true
 
         holder.checkBox.setOnCheckedChangeListener { _, checked ->
             Log.d(TAG, "This is a OnCheckedChangeListener")
-            if(checked)
-            {
-                viewModel.setIndex(lastVisited+1)
-                viewModel.visitPlace(position,true)
-            }
-            else
-            {
-                viewModel.visitPlace(position,false)
-                viewModel.setIndex(lastVisited-1)
+            if (checked) {
+                viewModel.setIndex(lastVisited + 1)
+                viewModel.visitPlace(position, true)
+            } else {
+                viewModel.visitPlace(position, false)
+                viewModel.setIndex(lastVisited - 1)
             }
         }
 
@@ -127,7 +161,8 @@ class ChecklistRecyclerViewAdapter(
         }
 
         holder.addPhotosLabelView.setOnClickListener{
-            //TODO: Add logic to add photos to each location and retrieve urls
+            //TODO: Add logic to add photos to each location and retrieve urls\
+            startGalleryIntent(position)
         }
 
         holder.webViewLocation.setOnClickListener{
@@ -137,12 +172,20 @@ class ChecklistRecyclerViewAdapter(
         }
 
         holder.hideDesc.setOnClickListener{
-//            openWebView?.invoke(locations[position].wikiUrl.toString())
+            openWebView?.invoke(locations[position].wikiUrl.toString())
             holder.locDesc.maxLines = 3
             holder.webViewLocation.visibility = View.VISIBLE
             holder.hideDesc.visibility = View.GONE
         }
 
+    }
+
+    private fun openGalleryIntent(position: Int){
+        val galleryIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+            type = "image/*"
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        }
+        context.startActivity(galleryIntent)
     }
 
     private fun viewOnMap(loc1: ItineraryLocation, loc2: ItineraryLocation, mapType: String) {
@@ -163,6 +206,7 @@ class ChecklistRecyclerViewAdapter(
 
     inner class ModelViewHolder(binding: ItineraryLocationListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
+        var _binding = binding
         var locationName : TextView = binding.locationName
         var locationDesc : TextView = binding.locationDescription
         var locationVisited : CheckBox = binding.locationVisited
@@ -182,14 +226,17 @@ class ChecklistRecyclerViewAdapter(
         var itineraryLayout: ConstraintLayout = binding.itineraryMainLayout
         var userOptionsView: LinearLayout = binding.userOptionsView
         var addPhotosLabelView: TextView = binding.addPhotos
-        var photoListView: LinearLayout = binding.userImagesView
+        var photoListView: FrameLayout = binding.userImagesView
         var locationDescLayoutView : LinearLayout = binding.locationDescView
         var webViewLocation: TextView = binding.webViewLocation
         var locDesc: TextView = binding.locationDescription
         var hideDesc: TextView = binding.hideDesc
+        var startPointView: LinearLayout = binding.startPoint
+        var photoRecyclerView: RecyclerView = binding.photoGalleryView
     }
 
     companion object {
         const val TAG : String = "Checklist Adapter"
     }
+
 }
