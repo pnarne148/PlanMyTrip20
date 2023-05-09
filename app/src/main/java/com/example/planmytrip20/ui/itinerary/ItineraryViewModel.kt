@@ -28,6 +28,11 @@ class ItineraryViewModel : ViewModel() {
         value = 2
     }
 
+    private val _latestIndex = MutableLiveData<Int>().apply {
+        value = 0
+    }
+    val latestIndex : LiveData<Int> = _latestIndex
+
     private val _prevLocationIndex = MutableLiveData<Int>().apply {
         value = 1
     }
@@ -65,6 +70,11 @@ class ItineraryViewModel : ViewModel() {
     fun setText(str:String)
     {
         _text.value = str
+    }
+
+    fun setIndex(i:Int)
+    {
+        _latestIndex.value = i
     }
 
     fun setNextLocationIndex(value:Int)
@@ -274,6 +284,13 @@ class ItineraryViewModel : ViewModel() {
 
 //        Log.d("Firebase", "updateFirebaseDB: "+ (task.result.id))
 //        _docReference.value = task.result.id
+    }
+
+    fun visitPlace(position: Int, checked: Boolean) {
+        val updatedChosenPlaces = chosenPlaces.value.orEmpty().toMutableList()
+        updatedChosenPlaces[position].visited = checked
+        _chosenPlaces.value = updatedChosenPlaces
+
     }
 
 }
