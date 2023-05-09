@@ -20,6 +20,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDateTime
 import java.util.Collections
 
 class ItineraryViewModel : ViewModel() {
@@ -270,7 +271,7 @@ class ItineraryViewModel : ViewModel() {
         val newAttractions = chosenPlaces.value.orEmpty().map { it.copy(bitmap = null) }
         val newRecommendations = recommendedPlaces.value.orEmpty().map { it.copy(bitmap = null) }
 
-        val newItinerary = ItineraryExport(newDestination, newAttractions, newRecommendations)
+        val newItinerary = ItineraryExport(newDestination, newAttractions, newRecommendations, notes.value, LocalDateTime.now())
 
         if(docReference.value.equals(""))
             FirebaseHelper().createNewItinerary(newItinerary){
@@ -290,7 +291,7 @@ class ItineraryViewModel : ViewModel() {
         val updatedChosenPlaces = chosenPlaces.value.orEmpty().toMutableList()
         updatedChosenPlaces[position].visited = checked
         _chosenPlaces.value = updatedChosenPlaces
-
+        updateFirebaseDB()
     }
 
 }
