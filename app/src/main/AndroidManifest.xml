@@ -43,17 +43,20 @@
         <activity
             android:name="com.example.planmytrip.auth.LoginActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity
             android:name="com.example.planmytrip.auth.SignUpActivity"
             android:exported="false" />
         <activity
             android:name=".ui.profile.UserQuiz.UserPreferencesActivity"
-            android:exported="false" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 

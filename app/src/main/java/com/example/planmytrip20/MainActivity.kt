@@ -113,4 +113,6 @@ class MainActivity : AppCompatActivity() {
         navView.selectedItemId = R.id.navigation_home
         navView.visibility = View.VISIBLE
     }
+
+
 }

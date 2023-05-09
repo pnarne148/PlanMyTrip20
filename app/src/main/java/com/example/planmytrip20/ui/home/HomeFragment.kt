@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,6 +51,7 @@ class HomeFragment : Fragment() {
 
         MobileAds.initialize(requireContext()) {}
 
+        requireActivity().onBackPressedDispatcher.addCallback { onBackPressed() }
 
         return root
     }
@@ -217,6 +219,12 @@ class HomeFragment : Fragment() {
 
     }
 
+    fun onBackPressed(): Boolean {
+        // Handle the back button press
+        // Return true if the back button press is consumed
+        // Return false if the back button press should be handled by the parent activity
+        return true
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

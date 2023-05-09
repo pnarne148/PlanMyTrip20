@@ -42,15 +42,11 @@ class UserPreferencesActivity : AppCompatActivity() {
         }
 
         binding.skipButton.setOnClickListener {
-            if (quizViewModel.isLastQuestion()) {
                 storeAnswersInFirebase()
                 val loginIntent = Intent(this, LoginActivity::class.java)
                 startActivity(loginIntent)
                 finish()
-            } else {
-                quizViewModel.moveToNext()
-                updateQuestion()
-            }
+
         }
     }
 
@@ -103,7 +99,7 @@ class UserPreferencesActivity : AppCompatActivity() {
     private fun storeAnswersInFirebase() {
         val answers = hashMapOf<String, String>()
         for (pair in quizViewModel.getQuestionsAndAnswers()) {
-            answers[pair.first] = pair.second
+            answers[pair.first] = pair.second?.let { it } ?: ""
         }
 
         val userId = FirebaseAuth.getInstance().currentUser?.uid
