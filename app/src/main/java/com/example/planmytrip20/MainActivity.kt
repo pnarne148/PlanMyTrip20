@@ -1,10 +1,23 @@
 package com.example.planmytrip20
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
+import android.telephony.SmsManager
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -24,6 +37,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
@@ -37,9 +51,16 @@ class MainActivity : AppCompatActivity() {
     private val TAG="MainActivity"
     private lateinit var placesClient: PlacesClient
     private lateinit var navView: BottomNavigationView
+    private lateinit var auth: FirebaseAuth
+    private lateinit var firestore: FirebaseFirestore
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -86,7 +107,17 @@ class MainActivity : AppCompatActivity() {
 
 //        FirebaseHelper().createNewItinerary(ItineraryExport(loc, listOf(loc), listOf(loc, loc)))
 
+        binding.sosButton.setOnClickListener {
+            sendLocationBySms()
+        }
 
+        fetchSOSstatus {
+            Log.d("firebase", "onCreate: "+it)
+            if(it.equals("false") or it.equals(null))
+                binding.sosButton.visibility = View.GONE
+            else
+                binding.sosButton.visibility = View.VISIBLE
+        }
     }
 
     override fun onBackPressed() {
@@ -98,7 +129,11 @@ class MainActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    companion object {}
+    companion object {
+        private const val CALL_PHONE_REQUEST_CODE = 1001
+        private const val SEND_SMS_REQUEST_CODE = 1002
+        private const val ACCESS_FINE_LOCATION_REQUEST_CODE = 1003
+    }
 
     fun hideBottomNavigation() {
         navView.visibility = View.GONE
@@ -112,6 +147,164 @@ class MainActivity : AppCompatActivity() {
         navView.selectedItemId = R.id.navigation_home
         navView.visibility = View.VISIBLE
     }
+
+    private fun callEmergencyNumber(emergencyContact: String?) {
+        if (emergencyContact == null) {
+            return
+        }
+        if (hasCallPhonePermission()) {
+            val intent = Intent(Intent.ACTION_CALL)
+            intent.data = Uri.parse("tel:$emergencyContact")
+            startActivity(intent)
+        } else {
+            requestCallPhonePermission()
+        }
+    }
+
+    fun enableSOS(){
+        binding.sosButton.visibility = View.VISIBLE
+    }
+
+    fun disableSOS(){
+        binding.sosButton.visibility = View.GONE
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun sendLocationBySms() {
+        if (!hasSendSmsPermission()) {
+            requestSendSmsPermission()
+        } else if (!hasAccessFineLocationPermission()) {
+            requestAccessFineLocationPermission()
+        } else {
+            fetchEmergencyContact { emergencyContact ->
+                if (emergencyContact == null) {
+                    return@fetchEmergencyContact
+                }
+                callEmergencyNumber(emergencyContact)
+
+                val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                val locationListener = object : LocationListener {
+                    override fun onLocationChanged(location: Location) {
+                        val googleMapsUrl = "https://maps.google.com/?q=${location.latitude},${location.longitude}"
+                        val message = "Help!! My current location is: $googleMapsUrl"
+                        SmsManager.getDefault().sendTextMessage(emergencyContact, null, message, null, null)
+                        Toast.makeText(this@MainActivity, "SOS message sent with location.", Toast.LENGTH_SHORT).show()
+                        locationManager.removeUpdates(this)
+                    }
+
+                }
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, locationListener)
+            }
+        }
+    }
+
+
+
+    private fun fetchEmergencyContact(callback: (String?) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            callback(null)
+            return
+        }
+
+        firestore.collection("userDetails").document(userId).get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val emergencyContact = document.getString("emergencyContact")
+                    callback(emergencyContact)
+                } else {
+                    Toast.makeText(this, "No emergency contact found", Toast.LENGTH_SHORT).show()
+                    callback(null)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(this, "Error fetching emergency contact: $exception", Toast.LENGTH_SHORT).show()
+                callback(null)
+            }
+    }
+
+    private fun fetchSOSstatus(callback: (String?) -> Unit) {
+        val userId = auth.currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            callback(null)
+            return
+        }
+
+        firestore.collection("userDetails").document(userId).get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    Log.d("firebase", "fetchSOSstatus: "+document)
+                    val emergencyContact = document.getString("sos")
+                    callback(emergencyContact)
+                } else {
+                    Toast.makeText(this, "No emergency contact found", Toast.LENGTH_SHORT).show()
+                    callback(null)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Toast.makeText(this, "Error fetching emergency contact: $exception", Toast.LENGTH_SHORT).show()
+                callback(null)
+            }
+    }
+
+
+    private fun hasCallPhonePermission(): Boolean {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestCallPhonePermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CALL_PHONE), CALL_PHONE_REQUEST_CODE)
+    }
+
+    private fun hasSendSmsPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestSendSmsPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.SEND_SMS), SEND_SMS_REQUEST_CODE)
+    }
+
+    private fun hasAccessFineLocationPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestAccessFineLocationPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), ACCESS_FINE_LOCATION_REQUEST_CODE)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            CALL_PHONE_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    fetchEmergencyContact { emergencyContact ->
+                        callEmergencyNumber(emergencyContact)
+                    }
+                } else {
+                    Toast.makeText(this, "Permission denied, unable to call emergency number.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            SEND_SMS_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    sendLocationBySms()
+                } else {
+                    Toast.makeText(this, "Permission denied, unable to send SMS with location.", Toast.LENGTH_SHORT).show()
+                }
+            }
+            ACCESS_FINE_LOCATION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    sendLocationBySms()
+                } else {
+                    Toast.makeText(this, "Permission denied, unable to get location.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+
 
 
 }
