@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.planmytrip20.databinding.ActivitySignUpBinding
+import com.example.planmytrip20.ui.profile.UserQuiz.UserPreferencesActivity
 
 import com.google.firebase.auth.FirebaseAuth
 
@@ -35,11 +36,10 @@ class SignUpActivity : AppCompatActivity() {
 
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                         if (it.isSuccessful) {
-                            val intent = Intent(this, LoginActivity::class.java)
-                            startActivity(intent)
+                            val intent = Intent(this, UserPreferencesActivity::class.java)
+                            startActivityForResult(intent, 1)
                         } else {
                             Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
-
                         }
                     }
                 } else {
