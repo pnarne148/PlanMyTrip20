@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RatingBar
@@ -104,7 +105,7 @@ class ChecklistRecyclerViewAdapter(
 
         holder.checkBox.isChecked = locations[position].visited
 
-
+        Log.d(TAG, "Location${position} photos size : ${locations[position].user_photo_urls?.size}")
         if(locations[position].visited && locations[position]?.user_photo_urls != null && locations[position]?.user_photo_urls?.isNotEmpty()!!) {
             holder.addPhotosLabelView.visibility = View.VISIBLE
             holder.photoListView.visibility = View.VISIBLE
@@ -118,6 +119,10 @@ class ChecklistRecyclerViewAdapter(
 
 
         Log.d(TAG, lastVisited.toString())
+
+        if(position == 0){
+            holder.startPointView.visibility = View.VISIBLE
+        }
 
         if(position == lastVisited)
         {
@@ -137,6 +142,17 @@ class ChecklistRecyclerViewAdapter(
             holder.statusText.visibility = View.VISIBLE
             holder.statusBar.setBackgroundColor(context.resources.getColor(R.color.darkgray))
             holder.verticalLineView.setBackgroundColor(context.resources.getColor(R.color.darkgray))
+        }
+
+        if(position == locations.size - 1 && locations[position].visited){
+            holder.placeElementsLayout.visibility = View.GONE
+            holder.completedView.visibility = View.VISIBLE
+            holder.statusText.text = "Woah...  you have successfully completed the trip"
+            holder.statusText.setTextColor(context.resources.getColor(R.color.green))
+        }
+        if(position == locations.size - 1 && !locations[position].visited){
+            holder.placeElementsLayout.visibility = View.GONE
+            holder.completedView.visibility = View.GONE
         }
 
         if(position == lastVisited+1)
@@ -231,11 +247,12 @@ class ChecklistRecyclerViewAdapter(
         var itineraryLayout: ConstraintLayout = binding.itineraryMainLayout
         var userOptionsView: LinearLayout = binding.userOptionsView
         var addPhotosLabelView: TextView = binding.addPhotos
-        var photoListView: LinearLayout = binding.userImagesView
+        var photoListView: FrameLayout = binding.userImagesView
         var locationDescLayoutView : LinearLayout = binding.locationDescView
         var webViewLocation: TextView = binding.webViewLocation
         var locDesc: TextView = binding.locationDescription
         var hideDesc: TextView = binding.hideDesc
+        var startPointView: LinearLayout = binding.startPoint
     }
 
     companion object {

@@ -22,6 +22,7 @@ import com.example.planmytrip20.classes.ItineraryLocation
 import com.example.planmytrip20.databinding.FragmentTripPlanBinding
 import com.example.planmytrip20.ui.itinerary.ItineraryViewModel
 import com.example.planmytrip20.ui.itinerary.maps.MapBottomSheetFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.GsonBuilder
@@ -100,7 +101,12 @@ class TripPlanFragment(private val viewModelOwner: ViewModelStoreOwner) : Fragme
             })
         }
 
-
+        binding.optimizeRouteText.setOnClickListener {
+            MaterialAlertDialogBuilder(it.context).setTitle("Alert")
+                .setMessage("This feature is only available for PRO members. Please upgrade to premium")
+                .setPositiveButton("OK") { dialog, which ->
+                }.show()
+        }
 
 //        itineraryViewModel.chosenPlaces.observe(viewLifecycleOwner, Observer { newLocations ->
 //            if(newLocations.isNotEmpty()){
@@ -157,12 +163,7 @@ class TripPlanFragment(private val viewModelOwner: ViewModelStoreOwner) : Fragme
 //
 //        _binding = FragmentTripPlanBinding.inflate(inflater, container, false)
 //
-//        _binding!!.optimizeRouteText.setOnClickListener {
-//            MaterialAlertDialogBuilder(it.context).setTitle("Alert")
-//                .setMessage("This feature is only available for PRO members. Please upgrade to premium")
-//                .setPositiveButton("OK") { dialog, which ->
-//                }.show()
-//        }
+
 
         return binding.root
     }
