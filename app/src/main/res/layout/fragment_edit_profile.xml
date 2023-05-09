@@ -116,7 +116,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif-light"
                     android:text="joey@sharenofood.com"
-                    android:textColor="#000000"
+                    android:textColor="@color/quantum_grey"
                     android:textSize="18sp" />
 
 

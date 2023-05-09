@@ -7,6 +7,7 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -19,19 +20,15 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
-import androidx.navigation.fragment.findNavController
 import coil.load
 import coil.transform.CircleCropTransformation
 import com.example.planmytrip20.MainActivity
 import com.example.planmytrip20.classes.database
 
 import com.example.planmytrip20.databinding.FragmentEditProfileBinding
-import com.example.planmytrip20.databinding.FragmentProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.storage.FirebaseStorage
@@ -62,7 +59,7 @@ class EditProfileFragment : Fragment() {
 
         _binding = FragmentEditProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
+        root.setBackgroundColor(Color.WHITE);
 
         val profileViewModel =
             ViewModelProvider(this).get(ProfileViewModel::class.java)
@@ -155,7 +152,7 @@ class EditProfileFragment : Fragment() {
                 "updating userdetails for : {} " + username + phNo + emergencyPhNo + address + uid
             )
             val userDetails = hashMapOf(
-                "username" to username,
+                "userName" to username,
                 "phoneNumber" to phNo,
                 "email" to email,
                 "emergencyContact" to emergencyPhNo,
@@ -175,6 +172,25 @@ class EditProfileFragment : Fragment() {
                     }
             }
 
+        }
+        var firebaseAuth = FirebaseAuth.getInstance()
+        val email = firebaseAuth.currentUser?.email
+
+        binding.btnAddress.setOnClickListener {
+            if (  email!=null) {
+                    firebaseAuth.sendPasswordResetEmail(email)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // Password reset email sent successfully
+                                Toast.makeText(requireContext(), "Password reset email sent.", Toast.LENGTH_SHORT).show()
+                            } else {
+                                // Password reset email failed to send
+                                Toast.makeText(requireContext(), "Failed to send password reset email.", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+            } else {
+                Toast.makeText(requireContext(), "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
+            }
         }
         return root
     }
