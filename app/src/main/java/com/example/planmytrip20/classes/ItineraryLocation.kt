@@ -6,7 +6,7 @@ import android.os.Parcelable
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.firestore.Exclude
 
-data class ItineraryLocation(
+data class  ItineraryLocation(
     var location_id: String, // id of location in our database
     var place_id: String?, // place id from google
     var name: String?,

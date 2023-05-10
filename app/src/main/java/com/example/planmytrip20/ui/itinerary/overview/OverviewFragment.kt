@@ -37,7 +37,7 @@ class OverviewFragment(viewModelOwner: ViewModelStoreOwner) : Fragment() {
         with(binding.cardItem) {
             layoutManager = LinearLayoutManager(context)
 
-            val values = listOf("Notes", "Places to Visit", "Flights", "Hotels")
+            val values = listOf("Notes", "Places to Visit")
             adapter = OverviewListAdapter(context, itineraryViewModel, viewLifecycleOwner, values, childFragmentManager)
         }
 

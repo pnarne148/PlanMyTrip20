@@ -1,4 +1,4 @@
-package com.example.planmytrip
+package com.example.planmytrip20
 
 //import androidx.recyclerview.widget.RecyclerView
 //import androidx.test.espresso.Espresso.onView
@@ -33,8 +33,8 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.bignerdranch.android.planmytrip.Homepage
-import com.example.planmytrip.homepage.HomepageAdapter
+import com.example.planmytrip20.ui.home.HomeFragment
+import com.example.planmytrip20.ui.home.HomepageAdapter
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,11 +43,11 @@ import org.junit.runner.RunWith
 @LargeTest
 class HomepageInstrumentedTestCases {
 
-    private lateinit var scenario: FragmentScenario<Homepage>
+    private lateinit var scenario: FragmentScenario<HomeFragment>
 
     @Before
     fun setUp() {
-        scenario = launchFragmentInContainer<Homepage>()
+        scenario = launchFragmentInContainer<HomeFragment>()
     }
 
     @Test
@@ -70,7 +70,7 @@ class HomepageInstrumentedTestCases {
             val recyclerView = fragment.requireView().findViewById<RecyclerView>(R.id.recyclerViewCard)
             Espresso.onView(ViewMatchers.withId(R.id.recyclerViewCard))
                 .perform(RecyclerViewActions.actionOnItemAtPosition<HomepageAdapter.ViewHolder>(0, ViewActions.click()))
-            Espresso.onView(ViewMatchers.withId(R.id.fragment_container_view))
+            Espresso.onView(ViewMatchers.withId(R.id.nav_host_fragment_activity_main))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
             assert(fragment.requireActivity().supportFragmentManager.backStackEntryCount == 1)
         }
@@ -81,7 +81,7 @@ class HomepageInstrumentedTestCases {
         scenario.onFragment { fragment ->
             Espresso.onView(ViewMatchers.withId(R.id.viewAllButton))
                 .perform(ViewActions.click())
-            Espresso.onView(ViewMatchers.withId(R.id.fragment_container_view))
+            Espresso.onView(ViewMatchers.withId(R.id.nav_host_fragment_activity_main))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
             assert(fragment.requireActivity().supportFragmentManager.backStackEntryCount == 1)
         }

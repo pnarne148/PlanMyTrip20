@@ -1,15 +1,12 @@
 package com.example.planmytrip20.ui.profile.TripAdapter
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.util.Xml
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.bumptech.glide.request.RequestOptions
 import com.example.planmytrip20.R
 import com.example.planmytrip20.api.FirebaseHelper
@@ -20,7 +17,8 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
-class TripAdapter (private var trips: List<ItineraryExport>,
+class TripAdapter (private var context: Context,
+                   private var trips: List<ItineraryExport>,
                    private var documentIDs: List<String>) :
     RecyclerView.Adapter<TripAdapter.ViewHolder>() {
 
@@ -34,7 +32,7 @@ class TripAdapter (private var trips: List<ItineraryExport>,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         // Bind data to ViewHolder here
-        holder.bind(trips[position], documentIDs[position], this)
+        holder.bind(context, trips[position], documentIDs[position], this)
     }
 
     override fun getItemCount(): Int {
@@ -54,7 +52,7 @@ class TripAdapter (private var trips: List<ItineraryExport>,
     class ViewHolder(private val binding: ItineraryListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(trip: ItineraryExport, document: String, adapter: TripAdapter) {
+        fun bind(context: Context, trip: ItineraryExport, document: String, adapter: TripAdapter) {
             binding.itineraryItemHeaderView.text = "Trip to "+trip.destination?.name
 
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
@@ -75,7 +73,7 @@ class TripAdapter (private var trips: List<ItineraryExport>,
             }
 
             binding.deleteItineraryIcon.setOnClickListener {
-                FirebaseHelper().deleteItinerary(document)
+                FirebaseHelper(firebaseAuthMock, firebaseFirestoreMock).deleteItinerary(document)
                 adapter.removeItem(adapterPosition)
             }
 
