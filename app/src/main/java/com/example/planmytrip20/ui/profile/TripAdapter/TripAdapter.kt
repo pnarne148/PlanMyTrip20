@@ -73,7 +73,7 @@ class TripAdapter (private var context: Context,
             }
 
             binding.deleteItineraryIcon.setOnClickListener {
-                FirebaseHelper(firebaseAuthMock, firebaseFirestoreMock).deleteItinerary(document)
+                FirebaseHelper().deleteItinerary(document)
                 adapter.removeItem(adapterPosition)
             }
 

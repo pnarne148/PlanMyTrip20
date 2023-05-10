@@ -305,12 +305,12 @@ class ItineraryViewModel : ViewModel() {
         val newItinerary = ItineraryExport(newDestination, newAttractions, newRecommendations, notes.value, LocalDateTime.now().format(formatter))
 
         if(docReference.value.equals(""))
-            FirebaseHelper(firebaseAuthMock, firebaseFirestoreMock).createNewItinerary(newItinerary){
+            FirebaseHelper().createNewItinerary(newItinerary){
                 _docReference.value = it
                 Log.d("Firebase", "updateFirebaseDB0: "+it)
             }
         else
-            FirebaseHelper(firebaseAuthMock, firebaseFirestoreMock).updateItinerary(docReference.value.toString(),newItinerary)
+            FirebaseHelper().updateItinerary(docReference.value.toString(),newItinerary)
         Log.d("firebase", "updateFirebaseDB1: "+docReference.value)
         Log.d("firebase", "updateFirebaseDB2: "+_docReference.value)
 

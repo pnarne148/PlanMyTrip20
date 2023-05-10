@@ -1,4 +1,4 @@
-package com.example.planmytrip.api
+package com.example.planmytrip20.api
 
 import com.google.gson.annotations.SerializedName
 

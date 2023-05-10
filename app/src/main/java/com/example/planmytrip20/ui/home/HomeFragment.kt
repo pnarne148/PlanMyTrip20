@@ -15,8 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.planmytrip.api.PexelsApiService
-import com.example.planmytrip.api.PexelsPhoto
+import com.example.planmytrip20.api.PexelsApiService
+import com.example.planmytrip20.api.PexelsPhoto
 import com.example.planmytrip20.R
 import com.example.planmytrip20.classes.Item
 import com.example.planmytrip20.databinding.FragmentHomeBinding

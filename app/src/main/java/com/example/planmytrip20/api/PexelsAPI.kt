@@ -1,4 +1,4 @@
-package com.example.planmytrip.api
+package com.example.planmytrip20.api
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

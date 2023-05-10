@@ -7,7 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 
-class FirebaseHelper(firebaseAuthMock: FirebaseAuth, firebaseFirestoreMock: FirebaseFirestore) {
+class FirebaseHelper() {
 
     val TAG = "Firebase"
 

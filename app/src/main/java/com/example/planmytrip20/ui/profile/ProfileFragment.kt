@@ -103,7 +103,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun populateMyTrips() {
-        FirebaseHelper(firebaseAuthMock, firebaseFirestoreMock).getAllItineraries { it, doc ->
+        FirebaseHelper().getAllItineraries { it, doc ->
             Log.d("firebase", "populateMyTrips: "+it.size)
 
             if(it.size == 0){
